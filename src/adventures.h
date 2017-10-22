@@ -21,34 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ADVENTURESAREWRITTENINC_PLAYER_H
-#define ADVENTURESAREWRITTENINC_PLAYER_H
+#ifndef ADVENTURESAREWRITTENINC_ADVENTURES_H
+#define ADVENTURESAREWRITTENINC_ADVENTURES_H
 
-#define RACE_HUMAN 1
-#define RACE_DWARF 2
+#define MAP_WINDOW_WIDTH 48
+#define MAP_WINDOW_HEIGHT 24
 
-#define CLASS_WIZARD 1
-
-#define MAX_NAME_LENGTH 16
-
-typedef struct Player_ {
-    char name[MAX_NAME_LENGTH + 1];
-    int x;
-    int y;
-    int race;
-    int class;
-    int level;
-    int exp;
-    int str;
-    int end;
-    int wis;
-    int psy;
-    int agi;
-    int lck;
-} Player;
-
-void create_character(Player *player);
-
-void draw_player(const Player *player);
-
-#endif //ADVENTURESAREWRITTENINC_PLAYER_H
+#endif //ADVENTURESAREWRITTENINC_ADVENTURES_H

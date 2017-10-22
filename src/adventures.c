@@ -34,6 +34,13 @@
 #include <time.h>
 #include "map.h"
 
+const int MAP_FEATURE_SIZE = 3;
+
+#define MOVE_LEFT (-1)
+#define MOVE_RIGHT 1
+#define MOVE_UP (-1)
+#define MOVE_DOWN 1
+
 int check_compatible() {
     if (isatty(1) == 0) {
         printf("Not a tty\n");
@@ -56,38 +63,57 @@ void init_curses() {
     start_color();
 }
 
-void begin_adventure(Map *map) {
-    mvprintw(0, 71, "Adventures are written in C");
+static inline int get_rnd(int max) {
+    return (int) (random() % max);
+}
+
+void move_plr(World *world, Player *player, int x, int y) {
+    player->x += x;
+    player->y += y;
+    if (player->x < 0) {
+        player->x = 0;
+    }
+    if (player->y < 0) {
+        player->y = 0;
+    }
+    world->time += get_rnd(MINUTES_PER_HOUR * 2);
+}
+
+void begin_adventure(Map *map, World *world, Player *player) {
+    init_world(world);
+    create_character(player);
+    generate_map(map, random(), MAP_FEATURE_SIZE);
+
     int ch;
-    generate_map(map, random(), 3);
-    Player player;
-    player.x = 0;
-    player.y = 0;
     while (1) {
-        if (player.x < 0) {
-            player.x = 0;
-        }
-        if (player.y < 0) {
-            player.y = 0;
-        }
-        draw_map(map, &player);
-        draw_player(&player);
+        draw_map(map, world, player);
+        draw_player(player);
+        draw_world(world);
         ch = getch();
         switch (ch) {
-            case 'q':
-                return;
             case KEY_UP:
-                player.y--;
+                move_plr(world, player, 0, MOVE_UP);
                 break;
             case KEY_DOWN:
-                player.y++;
+                move_plr(world, player, 0, MOVE_DOWN);
                 break;
             case KEY_RIGHT:
-                player.x++;
+                move_plr(world, player, MOVE_RIGHT, 0);
                 break;
             case KEY_LEFT:
-                player.x--;
+                move_plr(world, player, MOVE_LEFT, 0);
                 break;
+            case 'o':
+                world->time++;
+                break;
+            case 'l':
+                world->time--;
+                if (world->time < 0) {
+                    world->time = 0;
+                }
+                break;
+            case 'q':
+                return;
             default:
                 break;
         }
@@ -106,7 +132,9 @@ int main() {
     size_t size = 512 * 512;
     int *mapData = calloc(size, sizeof(int));
     Map map = {mapWidth, mapHeight, mapData};
-    begin_adventure(&map);
+    World world;
+    Player player;
+    begin_adventure(&map, &world, &player);
     endwin();
     free(mapData);
     return EXIT_SUCCESS;

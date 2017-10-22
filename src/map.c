@@ -26,6 +26,7 @@
 #include "map.h"
 #include "imageutil.h"
 #include "simplexnoise.h"
+#include "adventures.h"
 
 #define CLR_DAY_LAKE 1
 #define CLR_DAY_BEACH 2
@@ -178,9 +179,9 @@ char map_terrain_to_char(int terrain) {
     }
 }
 
-void draw_map(const Map *map, const Player *player) {
-    int w = map->width > 70 ? 70 : map->width;
-    int h = map->height > 35 ? 35 : map->height;
+void draw_map(const Map *map, const World *world, const Player *player) {
+    int w = map->width > MAP_WINDOW_WIDTH ? MAP_WINDOW_WIDTH : map->width;
+    int h = map->height > MAP_WINDOW_HEIGHT ? MAP_WINDOW_HEIGHT : map->height;
     int pX = w / 2;
     int pY = h / 2;
     int *data = map->data;
@@ -191,7 +192,7 @@ void draw_map(const Map *map, const Player *player) {
                 mvaddch(y, x, '@');
             } else {
                 terrain = data[(x + player->x) + (y + player->y) * map->width];
-                opt = map_terrain_to_ui(terrain, FALSE);
+                opt = map_terrain_to_ui(terrain, is_night(world->time));
                 attron(opt);
                 mvaddch(y, x, map_terrain_to_char(terrain));
                 attroff(opt);

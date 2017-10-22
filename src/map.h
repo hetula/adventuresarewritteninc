@@ -25,6 +25,7 @@
 #define ADVENTURESAREWRITTENINC_MAP_GEN_H
 
 #include "player.h"
+#include "world.h"
 
 #define TERRAIN_LAKE 0
 #define TERRAIN_BEACH 1
@@ -42,6 +43,6 @@ typedef struct Map_ {
 
 void generate_map(Map *map, long seed, int feature_size);
 
-void draw_map(const Map *map, const Player *player);
+void draw_map(const Map *map, const World *world, const Player *player);
 
 #endif //ADVENTURESAREWRITTENINC_MAP_GEN_H

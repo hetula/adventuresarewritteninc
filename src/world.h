@@ -21,34 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ADVENTURESAREWRITTENINC_PLAYER_H
-#define ADVENTURESAREWRITTENINC_PLAYER_H
+#ifndef ADVENTURESAREWRITTENINC_WORLD_H
+#define ADVENTURESAREWRITTENINC_WORLD_H
 
-#define RACE_HUMAN 1
-#define RACE_DWARF 2
+#define MINUTES_PER_HOUR 60
+#define HOURS_PER_DAY 24
 
-#define CLASS_WIZARD 1
+#define DAYS_PER_MONTH 16
+#define MONTHS_PER_YEAR 8
+#define BASE_YEAR 120
 
-#define MAX_NAME_LENGTH 16
+typedef struct World_ {
+    long time;
+} World;
 
-typedef struct Player_ {
-    char name[MAX_NAME_LENGTH + 1];
-    int x;
-    int y;
-    int race;
-    int class;
-    int level;
-    int exp;
-    int str;
-    int end;
-    int wis;
-    int psy;
-    int agi;
-    int lck;
-} Player;
+void init_world(World *world);
 
-void create_character(Player *player);
+int is_night(long time);
 
-void draw_player(const Player *player);
+void draw_world(World *world);
 
-#endif //ADVENTURESAREWRITTENINC_PLAYER_H
+#endif //ADVENTURESAREWRITTENINC_WORLD_H
