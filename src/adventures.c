@@ -31,10 +31,8 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
 #include "map.h"
-
-int MAP_WIDTH = 70;
-int MAP_HEIGHT = 35;
 
 int check_compatible() {
     if (isatty(1) == 0) {
@@ -58,9 +56,9 @@ void init_curses() {
     start_color();
 }
 
-void begin_adventure(struct Map *map) {
+void begin_adventure(Map *map) {
     int ch;
-    generate_map(map, 10);
+    generate_map(map, 10, 3);
     draw_map(map);
     while (1) {
         ch = getch();
@@ -78,10 +76,16 @@ int main() {
     if (check_compatible() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
+    srandom((unsigned int) time(NULL));
     init_curses();
-    int mapData[MAP_WIDTH * MAP_HEIGHT];
-    struct Map map = {MAP_WIDTH, MAP_HEIGHT, mapData};
+    int mapWidth = 512;
+    int mapHeight = 512;
+
+    size_t size = 512 * 512;
+    int *mapData = calloc(size, sizeof(int));
+    Map map = {mapWidth, mapHeight, mapData};
     begin_adventure(&map);
     endwin();
+    free(mapData);
     return EXIT_SUCCESS;
 }

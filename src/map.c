@@ -22,16 +22,9 @@
  * SOFTWARE.
  */
 #include <ncurses.h>
-#include "noise.h"
 #include "map.h"
-
-#define TERRAIN_LAKE 0
-#define TERRAIN_BEACH 1
-#define TERRAIN_GRASS 2
-#define TERRAIN_FOREST 3
-#define TERRAIN_HILL 4
-#define TERRAIN_MOUNTAIN 5
-#define TERRAIN_SNOWY_MOUNTAIN 6
+#include "imageutil.h"
+#include "simplexnoise.h"
 
 #define CLR_DAY_LAKE 1
 #define CLR_DAY_BEACH 2
@@ -49,32 +42,32 @@
 #define CLR_NIGHT_MOUNTAIN 13
 #define CLR_NIGHT_SNOWY_MOUNTAIN 14
 
-int map_noise_to_terrain(float noise) {
-    if (noise < 0.1) {
+int map_noise_to_terrain(double noise) {
+    if (noise < .1) {
         return TERRAIN_LAKE;
     }
-    if (noise < .15f) {
+    if (noise < .15) {
         return TERRAIN_BEACH;
     }
-    if (noise < .3f) {
+    if (noise < .3) {
         return TERRAIN_GRASS;
     }
-    if (noise < .35f) {
+    if (noise < .35) {
         return TERRAIN_FOREST;
     }
-    if (noise < .36f) {
+    if (noise < .36) {
         return TERRAIN_LAKE;
     }
-    if (noise < .45f) {
+    if (noise < .45) {
         return TERRAIN_GRASS;
     }
-    if (noise < .55f) {
+    if (noise < .55) {
         return TERRAIN_HILL;
     }
-    if (noise < .65f) {
+    if (noise < .65) {
         return TERRAIN_FOREST;
     }
-    if (noise < .75f) {
+    if (noise < .75) {
         return TERRAIN_HILL;
     }
     if (noise < .95f) {
@@ -101,16 +94,24 @@ int initialize_colors() {
     init_pair(CLR_DAY_SNOWY_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
 }
 
-void generate_map(struct Map *map, int seed) {
+void generate_map(Map *map, int seed, int feature_size) {
     initialize_colors();
-    initialize_noise(seed);
+    struct SimplexNoiseContext *ctx;
+    simplex_noise_init(seed, &ctx);
     int w = map->width;
     int h = map->height;
+
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
-            map->data[x + y * w] = map_noise_to_terrain(generate_noise(x, y, .7f, 6));
+            double v0 = simplex_noise(ctx, (double) x / feature_size / 4, (double) y / feature_size / 4);
+            double v1 = simplex_noise(ctx, (double) x / feature_size / 2, (double) y / feature_size / 2);
+            double v2 = simplex_noise(ctx, (double) x / feature_size / 1, (double) y / feature_size / 1);
+            double value = v0 * 4 / 7.0 + v1 * 2 / 7.0 + v2 * 1 / 7.0;
+            map->data[x + y * w] = map_noise_to_terrain(value);
         }
     }
+    simplex_noise_free(ctx);
+    save_map(map);
 }
 
 int map_terrain_to_ui(int terrain, int nigth) {
@@ -139,13 +140,13 @@ char map_terrain_to_char(int terrain) {
         case TERRAIN_LAKE:
             return 'L';
         case TERRAIN_BEACH:
-            return 'R';
+            return 'B';
         case TERRAIN_GRASS:
-            return '3';
+            return 'G';
         case TERRAIN_FOREST:
-            return 'P';
+            return 'F';
         case TERRAIN_HILL:
-            return 'J';
+            return 'H';
         case TERRAIN_MOUNTAIN:
             return 'M';
         case TERRAIN_SNOWY_MOUNTAIN:
@@ -155,10 +156,10 @@ char map_terrain_to_char(int terrain) {
     }
 }
 
-void draw_map(const struct Map *map) {
+void draw_map(const Map *map) {
     clear();
-    int w = map->width;
-    int h = map->height;
+    int w = map->width > 70 ? 70 : map->width;
+    int h = map->height > 35 ? 35 : map->height;
     int *data = map->data;
     int terrain, opt;
     for (int y = 0; y < h; y++) {
@@ -171,5 +172,4 @@ void draw_map(const struct Map *map) {
             refresh();
         }
     }
-
 }

@@ -23,14 +23,23 @@
  */
 #ifndef ADVENTURESAREWRITTENINC_MAP_GEN_H
 #define ADVENTURESAREWRITTENINC_MAP_GEN_H
-#endif //ADVENTURESAREWRITTENINC_MAP_GEN_H
 
-struct Map {
+#define TERRAIN_LAKE 0
+#define TERRAIN_BEACH 1
+#define TERRAIN_GRASS 2
+#define TERRAIN_FOREST 3
+#define TERRAIN_HILL 4
+#define TERRAIN_MOUNTAIN 5
+#define TERRAIN_SNOWY_MOUNTAIN 6
+
+typedef struct Map_ {
     int width;
     int height;
     int *data;
-};
+} Map;
 
-void generate_map(struct Map *map, int seed);
+void generate_map(Map *map, int seed, int feature_size);
 
-void draw_map(const struct Map *map);
+void draw_map(const Map *map);
+
+#endif //ADVENTURESAREWRITTENINC_MAP_GEN_H

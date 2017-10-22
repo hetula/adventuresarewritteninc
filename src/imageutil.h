@@ -1,0 +1,8 @@
+#ifndef ADVENTURESAREWRITTENINC_IMAGEUTIL_H
+#define ADVENTURESAREWRITTENINC_IMAGEUTIL_H
+
+#include "map.h"
+
+void save_map(const Map *map);
+
+#endif //ADVENTURESAREWRITTENINC_IMAGEUTIL_H
