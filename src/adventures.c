@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "map.h"
+#include "adventures.h"
 
 const int MAP_FEATURE_SIZE = 3;
 
@@ -86,9 +87,10 @@ void begin_adventure(Map *map, World *world, Player *player) {
 
     int ch;
     while (1) {
-        draw_map(map, world, player);
-        draw_player(player);
+        refresh();
         draw_world(world);
+        draw_player(player);
+        draw_map(map, world, player);
         ch = getch();
         switch (ch) {
             case KEY_UP:
@@ -131,10 +133,15 @@ int main() {
 
     size_t size = 512 * 512;
     int *mapData = calloc(size, sizeof(int));
-    Map map = {mapWidth, mapHeight, mapData};
+    Map map = {newwin(MAP_WINDOW_HEIGHT, MAP_WINDOW_WIDTH, 0, 0), mapWidth, mapHeight, mapData};
     World world;
+    world.win = newwin(5, 32, 0, MAP_WINDOW_WIDTH + 1);
     Player player;
+    player.win = newwin(16, 32, 5, MAP_WINDOW_WIDTH + 1);
     begin_adventure(&map, &world, &player);
+    delwin(map.win);
+    delwin(world.win);
+    delwin(player.win);
     endwin();
     free(mapData);
     return EXIT_SUCCESS;

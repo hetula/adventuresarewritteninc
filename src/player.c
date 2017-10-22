@@ -24,7 +24,6 @@
 
 #include <ncurses.h>
 #include <memory.h>
-#include "adventures.h"
 #include "player.h"
 
 void create_character(Player *player) {
@@ -45,19 +44,21 @@ void create_character(Player *player) {
 }
 
 void draw_player(const Player *player) {
-    int startX = MAP_WINDOW_WIDTH + 1;
-    int startY = 5;
-    mvprintw(startY++, startX, "%s", player->name);
-    mvprintw(startY++, startX, "Dwarven Wizard");
-    mvprintw(startY++, startX, "X: %d Y: %d     ", player->x, player->y);
+    WINDOW *win = player->win;
+    werase(win);
+    int startX = 0;
+    int startY = 0;
+    mvwprintw(win, startY++, startX, "%s", player->name);
+    mvwprintw(win, startY++, startX, "Dwarven Wizard");
+    mvwprintw(win, startY++, startX, "X: %d Y: %d     ", player->x, player->y);
     startY++;
-    mvprintw(startY++, startX, "Level:      %d", player->level);
-    mvprintw(startY++, startX, "Experience: %d/%d", player->exp, 100);
-    mvprintw(startY++, startX, "Strength:   %d", player->str);
-    mvprintw(startY++, startX, "Endurenace: %d", player->end);
-    mvprintw(startY++, startX, "Wisdom:     %d", player->wis);
-    mvprintw(startY++, startX, "Psyche:     %d", player->psy);
-    mvprintw(startY++, startX, "Agility:    %d", player->agi);
-    mvprintw(startY, startX, "Luck:       %d", player->lck);
-    refresh();
+    mvwprintw(win, startY++, startX, "Level:      %d", player->level);
+    mvwprintw(win, startY++, startX, "Experience: %d/%d", player->exp, 100);
+    mvwprintw(win, startY++, startX, "Strength:   %d", player->str);
+    mvwprintw(win, startY++, startX, "Endurenace: %d", player->end);
+    mvwprintw(win, startY++, startX, "Wisdom:     %d", player->wis);
+    mvwprintw(win, startY++, startX, "Psyche:     %d", player->psy);
+    mvwprintw(win, startY++, startX, "Agility:    %d", player->agi);
+    mvwprintw(win, startY, startX, "Luck:       %d", player->lck);
+    wrefresh(win);
 }

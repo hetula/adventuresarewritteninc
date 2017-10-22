@@ -186,18 +186,20 @@ void draw_map(const Map *map, const World *world, const Player *player) {
     int pY = h / 2;
     int *data = map->data;
     int terrain, opt;
+    werase(map->win);
+    wrefresh(map->win);
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
             if (pX == x && pY == y) {
-                mvaddch(y, x, '@');
+                mvwprintw(map->win, y, x, "%c", '@');
             } else {
                 terrain = data[(x + player->x) + (y + player->y) * map->width];
                 opt = map_terrain_to_ui(terrain, is_night(world->time));
-                attron(opt);
-                mvaddch(y, x, map_terrain_to_char(terrain));
-                attroff(opt);
+                wattron(map->win, opt);
+                mvwprintw(map->win, y, x, "%c", map_terrain_to_char(terrain));
+                wattroff(map->win, opt);
             }
-            refresh();
+            wrefresh(map->win);
         }
     }
 }

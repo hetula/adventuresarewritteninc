@@ -24,6 +24,7 @@
 #ifndef ADVENTURESAREWRITTENINC_MAP_GEN_H
 #define ADVENTURESAREWRITTENINC_MAP_GEN_H
 
+#include <ncurses.h>
 #include "player.h"
 #include "world.h"
 
@@ -36,6 +37,7 @@
 #define TERRAIN_SNOWY_MOUNTAIN 6
 
 typedef struct Map_ {
+    WINDOW *win;
     int width;
     int height;
     int *data;

@@ -24,6 +24,8 @@
 #ifndef ADVENTURESAREWRITTENINC_PLAYER_H
 #define ADVENTURESAREWRITTENINC_PLAYER_H
 
+#include <ncurses.h>
+
 #define RACE_HUMAN 1
 #define RACE_DWARF 2
 
@@ -32,6 +34,7 @@
 #define MAX_NAME_LENGTH 16
 
 typedef struct Player_ {
+    WINDOW *win;
     char name[MAX_NAME_LENGTH + 1];
     int x;
     int y;

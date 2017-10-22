@@ -24,6 +24,8 @@
 #ifndef ADVENTURESAREWRITTENINC_WORLD_H
 #define ADVENTURESAREWRITTENINC_WORLD_H
 
+#include <ncurses.h>
+
 #define MINUTES_PER_HOUR 60
 #define HOURS_PER_DAY 24
 
@@ -32,6 +34,7 @@
 #define BASE_YEAR 120
 
 typedef struct World_ {
+    WINDOW *win;
     long time;
 } World;
 

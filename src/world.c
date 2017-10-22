@@ -77,14 +77,16 @@ void init_world(World *world) {
     world->time = 0;
 }
 
-void draw_time(int x, int y, long time) {
-    mvprintw(y, x, "%02d.%02d.%d      ", 1 + get_day(time), 1 + get_month(time), get_year(time));
-    mvprintw(y + 1, x, "%02d:%02d     ", get_hour(time), get_minute(time));
+void draw_time(WINDOW *win, int x, int y, long time) {
+    mvwprintw(win, y, x, "%02d.%02d.%d", 1 + get_day(time), 1 + get_month(time), get_year(time));
+    mvwprintw(win, y + 1, x, "%02d:%02d", get_hour(time), get_minute(time));
 }
 
 void draw_world(World *world) {
-    mvprintw(0, MAP_WINDOW_WIDTH + 1, "Adventures are written in C");
-    int startX = MAP_WINDOW_WIDTH + 1;
+    werase(world->win);
+    mvwprintw(world->win, 0, 0, "Adventures are written in C");
+    int startX = 0;
     int startY = 1;
-    draw_time(startX, startY, world->time);
+    draw_time(world->win, startX, startY, world->time);
+    wrefresh(world->win);
 }
