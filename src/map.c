@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 #include <ncurses.h>
+#include <math.h>
 #include "map.h"
 #include "imageutil.h"
 #include "simplexnoise.h"
@@ -42,75 +43,96 @@
 #define CLR_NIGHT_MOUNTAIN 13
 #define CLR_NIGHT_SNOWY_MOUNTAIN 14
 
+int initialize_colors() {
+    init_pair(CLR_NIGHT_LAKE, 39, COLOR_BLACK);
+    init_pair(CLR_NIGHT_BEACH, 11, COLOR_BLACK);
+    init_pair(CLR_NIGHT_GRASS, 83, COLOR_BLACK);
+    init_pair(CLR_NIGHT_FOREST, 22, COLOR_BLACK);
+    init_pair(CLR_NIGHT_HILL, 94, COLOR_BLACK);
+    init_pair(CLR_NIGHT_MOUNTAIN, 244, COLOR_BLACK);
+    init_pair(CLR_NIGHT_SNOWY_MOUNTAIN, COLOR_WHITE, COLOR_BLACK);
+
+    init_pair(CLR_DAY_LAKE, COLOR_WHITE, 39);
+    init_pair(CLR_DAY_BEACH, COLOR_BLACK, 11);
+    init_pair(CLR_DAY_GRASS, COLOR_BLACK, 83);
+    init_pair(CLR_DAY_FOREST, COLOR_BLACK, 22);
+    init_pair(CLR_DAY_HILL, COLOR_BLACK, 94);
+    init_pair(CLR_DAY_MOUNTAIN, COLOR_BLACK, 244);
+    init_pair(CLR_DAY_SNOWY_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
+}
+
 int map_noise_to_terrain(double noise) {
-    if (noise < .1) {
-        return TERRAIN_LAKE;
-    }
-    if (noise < .15) {
-        return TERRAIN_BEACH;
-    }
     if (noise < .3) {
         return TERRAIN_GRASS;
     }
     if (noise < .35) {
         return TERRAIN_FOREST;
     }
-    if (noise < .36) {
-        return TERRAIN_LAKE;
-    }
-    if (noise < .45) {
+    if (noise < .5) {
         return TERRAIN_GRASS;
     }
-    if (noise < .55) {
-        return TERRAIN_HILL;
-    }
-    if (noise < .65) {
+    if (noise < .6) {
         return TERRAIN_FOREST;
     }
-    if (noise < .75) {
+    if (noise < .7) {
         return TERRAIN_HILL;
     }
-    if (noise < .95f) {
+    if (noise < .75f) {
         return TERRAIN_MOUNTAIN;
     }
     return TERRAIN_SNOWY_MOUNTAIN;
 }
 
-int initialize_colors() {
-    init_pair(CLR_NIGHT_LAKE, COLOR_BLUE, COLOR_BLACK);
-    init_pair(CLR_NIGHT_BEACH, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(CLR_NIGHT_GRASS, COLOR_GREEN, COLOR_BLACK);
-    init_pair(CLR_NIGHT_FOREST, COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(CLR_NIGHT_HILL, COLOR_CYAN, COLOR_BLACK);
-    init_pair(CLR_NIGHT_MOUNTAIN, COLOR_RED, COLOR_BLACK);
-    init_pair(CLR_NIGHT_SNOWY_MOUNTAIN, COLOR_WHITE, COLOR_BLACK);
-
-    init_pair(CLR_DAY_LAKE, COLOR_WHITE, COLOR_BLUE);
-    init_pair(CLR_DAY_BEACH, COLOR_BLACK, COLOR_YELLOW);
-    init_pair(CLR_DAY_GRASS, COLOR_BLACK, COLOR_GREEN);
-    init_pair(CLR_DAY_FOREST, COLOR_BLACK, COLOR_MAGENTA);
-    init_pair(CLR_DAY_HILL, COLOR_BLACK, COLOR_CYAN);
-    init_pair(CLR_DAY_MOUNTAIN, COLOR_BLACK, COLOR_RED);
-    init_pair(CLR_DAY_SNOWY_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
+int map_noise_to_water(double noise) {
+    if (noise < .35) {
+        return TERRAIN_LAKE;
+    }
+    if (noise < .37) {
+        return TERRAIN_BEACH;
+    }
+    return -1;
 }
 
-void generate_map(Map *map, int seed, int feature_size) {
+double gen_octavenoise(struct SimplexNoiseContext *ctx, double x, double y,
+                       int feature_size, int octaves, double roughness) {
+    int oct;
+    int octSum = 0;
+    double noise = 0;
+    for (int o = 0; o < octaves; o++) {
+        oct = o == 0 ? 1 : o * 2;
+        octSum += oct;
+        noise += simplex_noise(ctx, x / feature_size / oct, y / feature_size / oct) * oct;
+    }
+    return pow(noise / octSum, roughness);
+}
+
+void generate_map(Map *map, long seed, int feature_size) {
     initialize_colors();
-    struct SimplexNoiseContext *ctx;
-    simplex_noise_init(seed, &ctx);
+    struct SimplexNoiseContext *baseCtx;
+    simplex_noise_init(seed, &baseCtx);
     int w = map->width;
     int h = map->height;
 
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
-            double v0 = simplex_noise(ctx, (double) x / feature_size / 4, (double) y / feature_size / 4);
-            double v1 = simplex_noise(ctx, (double) x / feature_size / 2, (double) y / feature_size / 2);
-            double v2 = simplex_noise(ctx, (double) x / feature_size / 1, (double) y / feature_size / 1);
-            double value = v0 * 4 / 7.0 + v1 * 2 / 7.0 + v2 * 1 / 7.0;
-            map->data[x + y * w] = map_noise_to_terrain(value);
+            map->data[x + y * w] = map_noise_to_terrain(gen_octavenoise(baseCtx, x, y, feature_size, 6, .8));
         }
     }
-    simplex_noise_free(ctx);
+    simplex_noise_free(baseCtx);
+
+    struct SimplexNoiseContext *waterCtx;
+    simplex_noise_init(seed / 2, &waterCtx);
+    int terrain;
+    int water_feat = feature_size * 2;
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            terrain = map_noise_to_water(gen_octavenoise(waterCtx, x, y, water_feat, 6, .9));
+            if (terrain != -1) {
+                map->data[x + y * w] = terrain;
+            }
+        }
+    }
+    simplex_noise_free(waterCtx);
     save_map(map);
 }
 
@@ -138,37 +160,42 @@ int map_terrain_to_ui(int terrain, int nigth) {
 char map_terrain_to_char(int terrain) {
     switch (terrain) {
         case TERRAIN_LAKE:
-            return 'L';
+            return '~';
         case TERRAIN_BEACH:
-            return 'B';
+            return '\'';
         case TERRAIN_GRASS:
-            return 'G';
+            return '.';
         case TERRAIN_FOREST:
-            return 'F';
+            return '#';
         case TERRAIN_HILL:
-            return 'H';
+            return '^';
         case TERRAIN_MOUNTAIN:
-            return 'M';
+            return '^';
         case TERRAIN_SNOWY_MOUNTAIN:
-            return 'S';
+            return '^';
         default:
             return '?';
     }
 }
 
-void draw_map(const Map *map) {
-    clear();
+void draw_map(const Map *map, const Player *player) {
     int w = map->width > 70 ? 70 : map->width;
     int h = map->height > 35 ? 35 : map->height;
+    int pX = w / 2;
+    int pY = h / 2;
     int *data = map->data;
     int terrain, opt;
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
-            terrain = data[x + y * w];
-            opt = map_terrain_to_ui(terrain, FALSE);
-            attron(opt);
-            mvaddch(y, x, map_terrain_to_char(terrain));
-            attroff(opt);
+            if (pX == x && pY == y) {
+                mvaddch(y, x, '@');
+            } else {
+                terrain = data[(x + player->x) + (y + player->y) * map->width];
+                opt = map_terrain_to_ui(terrain, FALSE);
+                attron(opt);
+                mvaddch(y, x, map_terrain_to_char(terrain));
+                attroff(opt);
+            }
             refresh();
         }
     }

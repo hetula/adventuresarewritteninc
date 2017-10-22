@@ -21,27 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ADVENTURESAREWRITTENINC_MAP_GEN_H
-#define ADVENTURESAREWRITTENINC_MAP_GEN_H
 
+#include <ncurses.h>
 #include "player.h"
 
-#define TERRAIN_LAKE 0
-#define TERRAIN_BEACH 1
-#define TERRAIN_GRASS 2
-#define TERRAIN_FOREST 3
-#define TERRAIN_HILL 4
-#define TERRAIN_MOUNTAIN 5
-#define TERRAIN_SNOWY_MOUNTAIN 6
-
-typedef struct Map_ {
-    int width;
-    int height;
-    int *data;
-} Map;
-
-void generate_map(Map *map, long seed, int feature_size);
-
-void draw_map(const Map *map, const Player *player);
-
-#endif //ADVENTURESAREWRITTENINC_MAP_GEN_H
+void draw_player(const Player *player) {
+    int startX = 71;
+    int startY = 1;
+    mvprintw(startY++, startX, "<PlayerName>");
+    mvprintw(startY++, startX, "X: %d Y: %d     ", player->x, player->y);
+    mvprintw(startY++, startX, "Dwarven Wizard");
+    mvprintw(startY++, startX, "Experience: %d/%d", 0, 100);
+    mvprintw(startY++, startX, "Strength:   %d", 12);
+    mvprintw(startY++, startX, "Endurenace: %d", 15);
+    mvprintw(startY++, startX, "Wisdom:     %d", 32);
+    mvprintw(startY++, startX, "Psyche:     %d", 28);
+    mvprintw(startY++, startX, "Agility:    %d", 10);
+    mvprintw(startY, startX, "Luck:       %d", 6);
+    refresh();
+}

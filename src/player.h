@@ -21,27 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ADVENTURESAREWRITTENINC_MAP_GEN_H
-#define ADVENTURESAREWRITTENINC_MAP_GEN_H
+#ifndef ADVENTURESAREWRITTENINC_PLAYER_H
+#define ADVENTURESAREWRITTENINC_PLAYER_H
 
-#include "player.h"
+typedef struct Player_ {
+    int x;
+    int y;
+} Player;
 
-#define TERRAIN_LAKE 0
-#define TERRAIN_BEACH 1
-#define TERRAIN_GRASS 2
-#define TERRAIN_FOREST 3
-#define TERRAIN_HILL 4
-#define TERRAIN_MOUNTAIN 5
-#define TERRAIN_SNOWY_MOUNTAIN 6
+void draw_player(const Player *player);
 
-typedef struct Map_ {
-    int width;
-    int height;
-    int *data;
-} Map;
-
-void generate_map(Map *map, long seed, int feature_size);
-
-void draw_map(const Map *map, const Player *player);
-
-#endif //ADVENTURESAREWRITTENINC_MAP_GEN_H
+#endif //ADVENTURESAREWRITTENINC_PLAYER_H

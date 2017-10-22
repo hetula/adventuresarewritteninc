@@ -57,15 +57,37 @@ void init_curses() {
 }
 
 void begin_adventure(Map *map) {
+    mvprintw(0, 71, "Adventures are written in C");
     int ch;
-    generate_map(map, 10, 3);
-    draw_map(map);
+    generate_map(map, random(), 3);
+    Player player;
+    player.x = 0;
+    player.y = 0;
     while (1) {
+        if (player.x < 0) {
+            player.x = 0;
+        }
+        if (player.y < 0) {
+            player.y = 0;
+        }
+        draw_map(map, &player);
+        draw_player(&player);
         ch = getch();
         switch (ch) {
             case 'q':
                 return;
-
+            case KEY_UP:
+                player.y--;
+                break;
+            case KEY_DOWN:
+                player.y++;
+                break;
+            case KEY_RIGHT:
+                player.x++;
+                break;
+            case KEY_LEFT:
+                player.x--;
+                break;
             default:
                 break;
         }
