@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) $today.year Tuomo Heino
+ * Copyright (c) 2017 Tuomo Heino
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,6 @@ void init() {
 
 void end() {
     keypad(stdscr, TRUE);
-    clear();
 }
 
 void input_name(WINDOW *win, char *name) {
@@ -48,7 +47,7 @@ void ask_name(WINDOW *win, Player *player) {
     size_t l = (size_t) -1;
     do {
         if (l != -1) {
-            wclear(win);
+            werase(win);
             mvwprintw(win, 0, 0, "Invalid name! Please re-enter!");
             wrefresh(win);
         }
@@ -124,17 +123,22 @@ void create_player(Player *player) {
     init_pair(2, 4, COLOR_BLACK);
 
     ask_name(setup, player);
-    wclear(setup);
+    werase(setup);
+    wrefresh(setup);
     curs_set(FALSE);
     noecho();
 
     ask_race(setup, player);
-    wclear(setup);
+    werase(setup);
+    wrefresh(setup);
 
     ask_class(setup, player);
-    wclear(setup);
 
     wclear(setup);
+    wrefresh(setup);
     delwin(setup);
     end();
+    move(5, 0);
+    clrtoeol();
+    refresh();
 }

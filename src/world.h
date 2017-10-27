@@ -38,6 +38,14 @@ typedef struct World_ {
     long time;
 } World;
 
+typedef struct WorldParams_ {
+    unsigned int seed;
+    unsigned int width;
+    unsigned int height;
+} WorldParams;
+
+void input_world_params(WorldParams *worldParams);
+
 void init_world(World *world);
 
 int is_night(long time);

@@ -29,19 +29,21 @@
 void init_character(Player *player) {
     player->x = 0;
     player->y = 0;
-    player->race = RACE_DWARF;
-    player->class = CLASS_WIZARD;
+    player->race = RACE_HUMAN;
+    player->class = CLASS_WARRIOR;
     player->level = 1;
     player->exp = 0;
-    player->str = 10;
-    player->end = 13;
-    player->wis = 24;
-    player->psy = 19;
-    player->agi = 13;
-    player->lck = 11;
+    player->str = 1;
+    player->end = 1;
+    player->wis = 1;
+    player->psy = 1;
+    player->agi = 1;
+    player->lck = 1;
     player->name[0] = '\0';
-    strncat(player->name, "Gimli", MAX_NAME_LENGTH);
+    strncat(player->name, "Player Name", MAX_NAME_LENGTH);
 }
+
+
 
 const char *race_str(int race) {
     switch (race) {

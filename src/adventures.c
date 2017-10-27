@@ -86,6 +86,9 @@ void move_plr(World *world, Player *player, int x, int y) {
 void begin_adventure(Map *map, World *world, Player *player) {
     init_world(world);
     generate_map(map, random(), MAP_FEATURE_SIZE);
+    sleep(2);
+    clear();
+    refresh();
 
     int ch;
     while (1) {
@@ -129,32 +132,34 @@ int main() {
     if (check_compatible() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
-    srandom((unsigned int) time(NULL));
     init_curses();
     play_intro();
     Player player;
     init_character(&player);
     create_player(&player);
-    cbreak();
+    WorldParams worldParams = {0, 512, 512};
+    input_world_params(&worldParams);
+    unsigned int seed = worldParams.seed == 0 ? (unsigned int) time(NULL) : worldParams.seed;
+    srandom(seed);
+    mvprintw(5, 0, " Creating world...\n\t-> Seed:   %d\n\t-> Width:  %d\n\t-> Height: %d",
+             seed, worldParams.width, worldParams.height);
+    refresh();
 
-    int mapWidth = 512;
-    int mapHeight = 512;
+    unsigned int mapWidth = worldParams.width;
+    unsigned int mapHeight = worldParams.height;
 
-    size_t size = 512 * 512;
-    int *mapData = calloc(size, sizeof(int));
+    int *mapData = calloc(mapWidth * mapHeight, sizeof(int));
     Map map = {newwin(MAP_WINDOW_HEIGHT, MAP_WINDOW_WIDTH, 0, 0), mapWidth, mapHeight, mapData};
     World world;
     world.win = newwin(5, 32, 0, MAP_WINDOW_WIDTH + 1);
     player.win = newwin(16, 32, 5, MAP_WINDOW_WIDTH + 1);
+
+    cbreak();
     begin_adventure(&map, &world, &player);
     delwin(map.win);
     delwin(world.win);
     delwin(player.win);
     endwin();
     free(mapData);
-    long data = sizeof(int) * size;
-    printf("Sizes: Tile: %ldb Data[%ld]: %ldb (H:%ld Mb)\n", sizeof(int), size, data,
-           data / 1024 / 1024);
-    printf("A: %d %c", get_terrain(1)->color_day, get_terrain(1)->visual);
     return EXIT_SUCCESS;
 }
