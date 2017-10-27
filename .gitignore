@@ -65,4 +65,5 @@ dkms.conf
 test_data/
 .idea/
 /adventuresarewritteninc.cbp
+bin/
 build/
