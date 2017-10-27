@@ -34,7 +34,8 @@
 #include <time.h>
 #include "map.h"
 #include "adventures.h"
-#include "terrain.h"
+#include "intro.h"
+#include "charactercreator.h"
 
 const int MAP_FEATURE_SIZE = 3;
 
@@ -59,8 +60,9 @@ int check_compatible() {
 
 void init_curses() {
     noecho();
+    nonl();
+    intrflush(stdscr, FALSE);
     curs_set(FALSE);
-    cbreak();
     keypad(stdscr, TRUE);
     start_color();
 }
@@ -83,11 +85,11 @@ void move_plr(World *world, Player *player, int x, int y) {
 
 void begin_adventure(Map *map, World *world, Player *player) {
     init_world(world);
-    create_character(player);
     generate_map(map, random(), MAP_FEATURE_SIZE);
 
     int ch;
     while (1) {
+        usleep(16 * 1000);
         refresh();
         draw_world(world);
         draw_player(player);
@@ -129,6 +131,12 @@ int main() {
     }
     srandom((unsigned int) time(NULL));
     init_curses();
+    play_intro();
+    Player player;
+    init_character(&player);
+    create_player(&player);
+    cbreak();
+
     int mapWidth = 512;
     int mapHeight = 512;
 
@@ -137,7 +145,6 @@ int main() {
     Map map = {newwin(MAP_WINDOW_HEIGHT, MAP_WINDOW_WIDTH, 0, 0), mapWidth, mapHeight, mapData};
     World world;
     world.win = newwin(5, 32, 0, MAP_WINDOW_WIDTH + 1);
-    Player player;
     player.win = newwin(16, 32, 5, MAP_WINDOW_WIDTH + 1);
     begin_adventure(&map, &world, &player);
     delwin(map.win);
@@ -146,7 +153,8 @@ int main() {
     endwin();
     free(mapData);
     long data = sizeof(int) * size;
-    printf("Sizes: Tile: %ldb Data[%ld]: %ldb (H:%ld Mb)\n", sizeof(int), size, data, data / 1024 / 1024);
+    printf("Sizes: Tile: %ldb Data[%ld]: %ldb (H:%ld Mb)\n", sizeof(int), size, data,
+           data / 1024 / 1024);
     printf("A: %d %c", get_terrain(1)->color_day, get_terrain(1)->visual);
     return EXIT_SUCCESS;
 }

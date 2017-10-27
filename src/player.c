@@ -26,7 +26,7 @@
 #include <memory.h>
 #include "player.h"
 
-void create_character(Player *player) {
+void init_character(Player *player) {
     player->x = 0;
     player->y = 0;
     player->race = RACE_DWARF;
@@ -43,13 +43,46 @@ void create_character(Player *player) {
     strncat(player->name, "Gimli", MAX_NAME_LENGTH);
 }
 
+const char *race_str(int race) {
+    switch (race) {
+        case RACE_HUMAN:
+            return "Human";
+        case RACE_DWARF:
+            return "Dwarf";
+        case RACE_ELF:
+            return "Elf";
+        case RACE_ORC:
+            return "Orc";
+        default:
+            return "Unknown Race";
+    }
+}
+
+const char *class_str(int class) {
+    switch (class) {
+        case CLASS_WARRIOR:
+            return "Warrior";
+        case CLASS_WIZARD:
+            return "Wizard";
+        case CLASS_ROGUE:
+            return "Rogue";
+        default:
+            return "Unknown Class";
+    }
+}
+
 void draw_player(const Player *player) {
     WINDOW *win = player->win;
     werase(win);
     int startX = 0;
     int startY = 0;
-    mvwprintw(win, startY++, startX, "%s", player->name);
-    mvwprintw(win, startY++, startX, "Dwarven Wizard");
+    size_t l = strlen(player->name);
+    for (int i = 0; i < l; i++) {
+        mvwprintw(win, startY, startX + i, "%c", player->name[i]);
+        wrefresh(win);
+    }
+    startY++;
+    mvwprintw(win, startY++, startX, "%s %s", race_str(player->race), class_str(player->class));
     mvwprintw(win, startY++, startX, "X: %d Y: %d     ", player->x, player->y);
     startY++;
     mvwprintw(win, startY++, startX, "Level:      %d", player->level);

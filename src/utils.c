@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2017 Tuomo Heino
+ * Copyright (c) $today.year Tuomo Heino
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,45 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ADVENTURESAREWRITTENINC_PLAYER_H
-#define ADVENTURESAREWRITTENINC_PLAYER_H
+#include <memory.h>
+#include "utils.h"
+#include <unistd.h>
 
-#include <ncurses.h>
-
-#define RACE_HUMAN 1
-#define RACE_DWARF 2
-#define RACE_ELF 3
-#define RACE_ORC 4
-
-#define CLASS_WARRIOR 1
-#define CLASS_WIZARD 2
-#define CLASS_ROGUE 3
-
-#define MAX_NAME_LENGTH 16
-
-typedef struct Player_ {
-    WINDOW *win;
-    char name[MAX_NAME_LENGTH + 1];
-    int x;
-    int y;
-    int race;
-    int class;
-    int level;
-    int exp;
-    int str;
-    int end;
-    int wis;
-    int psy;
-    int agi;
-    int lck;
-} Player;
-
-void init_character(Player *player);
-
-const char *race_str(int race);
-
-const char *class_str(int class);
-
-void draw_player(const Player *player);
-
-#endif //ADVENTURESAREWRITTENINC_PLAYER_H
+void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char *string) {
+    size_t l = strlen(string);
+    int x = startX, y = startY;
+    for (int i = 0; i < l; i++) {
+        if (string[i] == '\n') {
+            y++;
+            x = startX;
+            continue;
+        }
+        mvwprintw(window, y, x, "%c", string[i]);
+        wrefresh(window);
+        x++;
+        usleep(delayMs * 1000);
+    }
+}
