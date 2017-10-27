@@ -44,7 +44,7 @@
 #define CLR_NIGHT_MOUNTAIN 13
 #define CLR_NIGHT_SNOWY_MOUNTAIN 14
 
-int initialize_colors() {
+void initialize_colors() {
     init_pair(CLR_NIGHT_LAKE, 39, 233);
     init_pair(CLR_NIGHT_BEACH, 11, 233);
     init_pair(CLR_NIGHT_GRASS, 83, 233);
@@ -94,6 +94,17 @@ int map_noise_to_water(double noise) {
     return -1;
 }
 
+int can_map_water(int terrain) {
+    switch (terrain) {
+        case TERRAIN_SNOWY_MOUNTAIN:
+        case TERRAIN_MOUNTAIN:
+        case TERRAIN_HILL:
+            return FALSE;
+        default:
+            return TRUE;
+    }
+}
+
 double gen_octavenoise(struct SimplexNoiseContext *ctx, double x, double y,
                        int feature_size, int octaves, double roughness) {
     int oct;
@@ -127,6 +138,9 @@ void generate_map(Map *map, long seed, int feature_size) {
     int water_feat = feature_size * 2;
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
+            if (can_map_water(map->data[x + y * w]) == FALSE) {
+                continue;
+            }
             terrain = map_noise_to_water(gen_octavenoise(waterCtx, x, y, water_feat, 6, .9));
             if (terrain != -1) {
                 map->data[x + y * w] = terrain;
