@@ -27,14 +27,7 @@
 #include <ncurses.h>
 #include "player.h"
 #include "world.h"
-
-#define TERRAIN_LAKE 0
-#define TERRAIN_BEACH 1
-#define TERRAIN_GRASS 2
-#define TERRAIN_FOREST 3
-#define TERRAIN_HILL 4
-#define TERRAIN_MOUNTAIN 5
-#define TERRAIN_SNOWY_MOUNTAIN 6
+#include "terrain.h"
 
 typedef struct Map_ {
     WINDOW *win;

@@ -28,40 +28,6 @@
 #include "simplexnoise.h"
 #include "adventures.h"
 
-#define CLR_DAY_LAKE 1
-#define CLR_DAY_BEACH 2
-#define CLR_DAY_GRASS 3
-#define CLR_DAY_FOREST 4
-#define CLR_DAY_HILL 5
-#define CLR_DAY_MOUNTAIN 6
-#define CLR_DAY_SNOWY_MOUNTAIN 7
-
-#define CLR_NIGHT_LAKE 8
-#define CLR_NIGHT_BEACH 9
-#define CLR_NIGHT_GRASS 10
-#define CLR_NIGHT_FOREST 11
-#define CLR_NIGHT_HILL 12
-#define CLR_NIGHT_MOUNTAIN 13
-#define CLR_NIGHT_SNOWY_MOUNTAIN 14
-
-void initialize_colors() {
-    init_pair(CLR_NIGHT_LAKE, 39, 233);
-    init_pair(CLR_NIGHT_BEACH, 11, 233);
-    init_pair(CLR_NIGHT_GRASS, 83, 233);
-    init_pair(CLR_NIGHT_FOREST, 22, 233);
-    init_pair(CLR_NIGHT_HILL, 94, 233);
-    init_pair(CLR_NIGHT_MOUNTAIN, 244, 233);
-    init_pair(CLR_NIGHT_SNOWY_MOUNTAIN, COLOR_WHITE, 233);
-
-    init_pair(CLR_DAY_LAKE, COLOR_WHITE, 39);
-    init_pair(CLR_DAY_BEACH, COLOR_BLACK, 11);
-    init_pair(CLR_DAY_GRASS, COLOR_BLACK, 83);
-    init_pair(CLR_DAY_FOREST, COLOR_BLACK, 22);
-    init_pair(CLR_DAY_HILL, COLOR_BLACK, 94);
-    init_pair(CLR_DAY_MOUNTAIN, COLOR_BLACK, 244);
-    init_pair(CLR_DAY_SNOWY_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
-}
-
 int map_noise_to_terrain(double noise) {
     if (noise < .3) {
         return TERRAIN_GRASS;
@@ -151,55 +117,14 @@ void generate_map(Map *map, long seed, int feature_size) {
     save_map(map);
 }
 
-int map_terrain_to_ui(int terrain, int nigth) {
-    switch (terrain) {
-        case TERRAIN_LAKE:
-            return COLOR_PAIR(nigth == TRUE ? CLR_NIGHT_LAKE : CLR_DAY_LAKE);
-        case TERRAIN_BEACH:
-            return COLOR_PAIR(nigth == TRUE ? CLR_NIGHT_BEACH : CLR_DAY_BEACH);
-        case TERRAIN_GRASS:
-            return COLOR_PAIR(nigth == TRUE ? CLR_NIGHT_GRASS : CLR_DAY_GRASS);
-        case TERRAIN_FOREST:
-            return COLOR_PAIR(nigth == TRUE ? CLR_NIGHT_FOREST : CLR_DAY_FOREST);
-        case TERRAIN_HILL:
-            return COLOR_PAIR(nigth == TRUE ? CLR_NIGHT_HILL : CLR_DAY_HILL);
-        case TERRAIN_MOUNTAIN:
-            return COLOR_PAIR(nigth == TRUE ? CLR_NIGHT_MOUNTAIN : CLR_DAY_MOUNTAIN);
-        case TERRAIN_SNOWY_MOUNTAIN:
-            return COLOR_PAIR(nigth == TRUE ? CLR_NIGHT_SNOWY_MOUNTAIN : CLR_DAY_SNOWY_MOUNTAIN);
-        default:
-            return COLOR_PAIR(0);
-    }
-}
-
-char map_terrain_to_char(int terrain) {
-    switch (terrain) {
-        case TERRAIN_LAKE:
-            return '~';
-        case TERRAIN_BEACH:
-            return '\'';
-        case TERRAIN_GRASS:
-            return '.';
-        case TERRAIN_FOREST:
-            return '#';
-        case TERRAIN_HILL:
-            return '^';
-        case TERRAIN_MOUNTAIN:
-            return '^';
-        case TERRAIN_SNOWY_MOUNTAIN:
-            return '^';
-        default:
-            return '?';
-    }
-}
-
 void draw_map(const Map *map, const World *world, const Player *player) {
     int w = map->width > MAP_WINDOW_WIDTH ? MAP_WINDOW_WIDTH : map->width;
     int h = map->height > MAP_WINDOW_HEIGHT ? MAP_WINDOW_HEIGHT : map->height;
     int pX = w / 2;
     int pY = h / 2;
     int *data = map->data;
-    int terrain, opt;
+    Terrain *terrain;
+    int opt;
     werase(map->win);
     wrefresh(map->win);
     for (int y = 0; y < h; y++) {
@@ -207,10 +132,10 @@ void draw_map(const Map *map, const World *world, const Player *player) {
             if (pX == x && pY == y) {
                 mvwprintw(map->win, y, x, "%c", '@');
             } else {
-                terrain = data[(x + player->x) + (y + player->y) * map->width];
-                opt = map_terrain_to_ui(terrain, is_night(world->time));
+                terrain = get_terrain(data[(x + player->x) + (y + player->y) * map->width]);
+                opt = COLOR_PAIR(is_night(world->time) ? terrain->color_night : terrain->color_day);
                 wattron(map->win, opt);
-                mvwprintw(map->win, y, x, "%c", map_terrain_to_char(terrain));
+                mvwprintw(map->win, y, x, "%c", terrain->visual);
                 wattroff(map->win, opt);
             }
             wrefresh(map->win);

@@ -34,6 +34,7 @@
 #include <time.h>
 #include "map.h"
 #include "adventures.h"
+#include "terrain.h"
 
 const int MAP_FEATURE_SIZE = 3;
 
@@ -50,7 +51,7 @@ int check_compatible() {
     initscr();
     if (has_colors() == FALSE) {
         endwin();
-        printf("Terminal not supporting colors!");
+        printf("Terminal not supporting colors!\n");
         return EXIT_FAILURE;
     }
     return 0;
@@ -144,5 +145,8 @@ int main() {
     delwin(player.win);
     endwin();
     free(mapData);
+    long data = sizeof(int) * size;
+    printf("Sizes: Tile: %ldb Data[%ld]: %ldb (H:%ld Mb)\n", sizeof(int), size, data, data / 1024 / 1024);
+    printf("A: %d %c", get_terrain(1)->color_day, get_terrain(1)->visual);
     return EXIT_SUCCESS;
 }
