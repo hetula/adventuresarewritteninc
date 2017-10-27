@@ -45,13 +45,13 @@
 #define CLR_NIGHT_SNOWY_MOUNTAIN 14
 
 int initialize_colors() {
-    init_pair(CLR_NIGHT_LAKE, 39, COLOR_BLACK);
-    init_pair(CLR_NIGHT_BEACH, 11, COLOR_BLACK);
-    init_pair(CLR_NIGHT_GRASS, 83, COLOR_BLACK);
-    init_pair(CLR_NIGHT_FOREST, 22, COLOR_BLACK);
-    init_pair(CLR_NIGHT_HILL, 94, COLOR_BLACK);
-    init_pair(CLR_NIGHT_MOUNTAIN, 244, COLOR_BLACK);
-    init_pair(CLR_NIGHT_SNOWY_MOUNTAIN, COLOR_WHITE, COLOR_BLACK);
+    init_pair(CLR_NIGHT_LAKE, 39, 233);
+    init_pair(CLR_NIGHT_BEACH, 11, 233);
+    init_pair(CLR_NIGHT_GRASS, 83, 233);
+    init_pair(CLR_NIGHT_FOREST, 22, 233);
+    init_pair(CLR_NIGHT_HILL, 94, 233);
+    init_pair(CLR_NIGHT_MOUNTAIN, 244, 233);
+    init_pair(CLR_NIGHT_SNOWY_MOUNTAIN, COLOR_WHITE, 233);
 
     init_pair(CLR_DAY_LAKE, COLOR_WHITE, 39);
     init_pair(CLR_DAY_BEACH, COLOR_BLACK, 11);
