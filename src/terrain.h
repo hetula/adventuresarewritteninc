@@ -49,6 +49,7 @@
 #define TERRAIN_SNOWY_MOUNTAIN 6
 
 struct Terrain_ {
+    char name[16];
     char visual;
     int color_day;
     int color_night;

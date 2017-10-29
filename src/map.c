@@ -28,10 +28,9 @@
 #include "simplexnoise.h"
 #include "adventures.h"
 
+static const double PI_CONST = M_PI * 2;
+
 int map_noise_to_terrain(double noise) {
-    if (noise < .3) {
-        return TERRAIN_GRASS;
-    }
     if (noise < .35) {
         return TERRAIN_FOREST;
     }
@@ -51,10 +50,10 @@ int map_noise_to_terrain(double noise) {
 }
 
 int map_noise_to_water(double noise) {
-    if (noise < .35) {
+    if (noise < .38) {
         return TERRAIN_LAKE;
     }
-    if (noise < .37) {
+    if (noise < .42) {
         return TERRAIN_BEACH;
     }
     return -1;
@@ -71,71 +70,111 @@ int can_map_water(int terrain) {
     }
 }
 
-double gen_octavenoise(struct SimplexNoiseContext *ctx, double x, double y,
-                       int feature_size, int octaves, double roughness) {
-    int oct;
-    int octSum = 0;
-    double noise = 0;
-    for (int o = 0; o < octaves; o++) {
-        oct = o == 0 ? 1 : o * 2;
-        octSum += oct;
-        noise += simplex_noise(ctx, x / feature_size / oct, y / feature_size / oct) * oct;
-    }
-    return pow(noise / octSum, roughness);
+double
+gen_noise(SimplexNoiseContext *ctx, double x, double y, double w, double h, int feature_size) {
+
+    double dx = feature_size;
+    double dy = feature_size;
+    double s = x / w;
+    double t = y / h;
+    double nx = cos(s * PI_CONST) * dx / PI_CONST;
+    double ny = cos(t * PI_CONST) * dy / PI_CONST;
+    double nz = sin(s * PI_CONST) * dx / PI_CONST;
+    double nw = sin(t * PI_CONST) * dy / PI_CONST;
+
+    return simplex_noise4(ctx, nx, ny, nz, nw);
 }
 
-void generate_map(Map *map, long seed, int feature_size) {
+void generate_map(Map *map, long seed, int save_data) {
     initialize_colors();
-    struct SimplexNoiseContext *baseCtx;
+    SimplexNoiseContext *baseCtx;
     simplex_noise_init(seed, &baseCtx);
+    FILE *f;
+    if (save_data == TRUE) {
+        f = fopen("noise_data.txt", "w");
+    }
     int w = map->width;
     int h = map->height;
-
+    double noise;
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
-            map->data[x + y * w] = map_noise_to_terrain(gen_octavenoise(baseCtx, x, y, feature_size, 6, .8));
+            noise = gen_noise(baseCtx, x, y, w, h, 48);
+            map->data[x + y * w] = map_noise_to_terrain(noise);
+            if (save_data == TRUE) {
+                fprintf(f, "%f\n", noise);
+            }
         }
     }
     simplex_noise_free(baseCtx);
+    if (save_data == TRUE) {
+        fprintf(f, "Water Noise\n");
+    }
 
-    struct SimplexNoiseContext *waterCtx;
+    SimplexNoiseContext *waterCtx;
     simplex_noise_init(seed / 2, &waterCtx);
     int terrain;
-    int water_feat = feature_size * 2;
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
             if (can_map_water(map->data[x + y * w]) == FALSE) {
                 continue;
             }
-            terrain = map_noise_to_water(gen_octavenoise(waterCtx, x, y, water_feat, 6, .9));
+            noise = gen_noise(waterCtx, x, y, w, h, 72);
+            terrain = map_noise_to_water(noise);
+            if (save_data == TRUE) {
+                fprintf(f, "%f\n", noise);
+            }
             if (terrain != -1) {
                 map->data[x + y * w] = terrain;
+
             }
         }
     }
     simplex_noise_free(waterCtx);
-    save_map(map);
+    if (save_data == TRUE) {
+        fclose(f);
+        save_map(map);
+    }
+}
+
+Terrain *get_terrain_at(int x, int y, const Player *player, const Map *map) {
+    int realX = player->x + x;
+    int realY = player->y + y;
+
+    if (realX < 0) {
+        realX = map->width + realX;
+    }
+    if (realY < 0) {
+        realY = map->height + realY;
+    }
+    if (realX >= map->width) {
+        realX = realX - map->width;
+    }
+    if (realY >= map->height) {
+        realY = realY - map->height;
+    }
+    return get_terrain(map->data[realX + realY * map->width]);
+}
+
+const Terrain *terrain_at(const Map *map, int x, int y) {
+    return get_terrain(map->data[x + y * map->width]);
 }
 
 void draw_map(const Map *map, const World *world, const Player *player) {
-    int w = map->width > MAP_WINDOW_WIDTH ? MAP_WINDOW_WIDTH : map->width;
-    int h = map->height > MAP_WINDOW_HEIGHT ? MAP_WINDOW_HEIGHT : map->height;
-    int pX = w / 2;
-    int pY = h / 2;
-    int *data = map->data;
+    int pX = MAP_WINDOW_WIDTH / 2;
+    int pY = MAP_WINDOW_HEIGHT / 2;
     Terrain *terrain;
     int opt;
     werase(map->win);
     wrefresh(map->win);
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            if (pX == x && pY == y) {
-                mvwprintw(map->win, y, x, "%c", '@');
+    for (int y = -pY; y < pY; y++) {
+        for (int x = -pX; x < pX; x++) {
+            if (y == 0 && x == 0) {
+                mvwprintw(map->win, pY + y, pX + x, "%c", '@');
             } else {
-                terrain = get_terrain(data[(x + player->x) + (y + player->y) * map->width]);
+                terrain = get_terrain_at(x, y, player, map);
                 opt = COLOR_PAIR(is_night(world->time) ? terrain->color_night : terrain->color_day);
                 wattron(map->win, opt);
-                mvwprintw(map->win, y, x, "%c", terrain->visual);
+                mvwprintw(map->win, pY + y, pX + x, "%c", terrain->visual);
                 wattroff(map->win, opt);
             }
             wrefresh(map->win);

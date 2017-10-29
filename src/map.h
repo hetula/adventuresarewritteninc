@@ -36,7 +36,9 @@ typedef struct Map_ {
     int *data;
 } Map;
 
-void generate_map(Map *map, long seed, int feature_size);
+void generate_map(Map *map, long seed, int save_data);
+
+const Terrain *terrain_at(const Map *map, int x, int y);
 
 void draw_map(const Map *map, const World *world, const Player *player);
 

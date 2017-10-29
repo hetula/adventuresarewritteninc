@@ -25,6 +25,7 @@
 #include <ncurses.h>
 #include <memory.h>
 #include "player.h"
+#include "map.h"
 
 void init_character(Player *player) {
     player->x = 0;
@@ -42,7 +43,6 @@ void init_character(Player *player) {
     player->name[0] = '\0';
     strncat(player->name, "Player Name", MAX_NAME_LENGTH);
 }
-
 
 
 const char *race_str(int race) {
@@ -73,9 +73,10 @@ const char *class_str(int class) {
     }
 }
 
-void draw_player(const Player *player) {
+void draw_player(const Player *player, const Map *map) {
     WINDOW *win = player->win;
     werase(win);
+    wrefresh(win);
     int startX = 0;
     int startY = 0;
     size_t l = strlen(player->name);
@@ -85,7 +86,8 @@ void draw_player(const Player *player) {
     }
     startY++;
     mvwprintw(win, startY++, startX, "%s %s", race_str(player->race), class_str(player->class));
-    mvwprintw(win, startY++, startX, "X: %d Y: %d     ", player->x, player->y);
+    mvwprintw(win, startY++, startX, "X: %d Y: %d", player->x, player->y);
+    mvwprintw(win, startY++, startX, "%s", terrain_at(map, player->x, player->y)->name);
     startY++;
     mvwprintw(win, startY++, startX, "Level:      %d", player->level);
     mvwprintw(win, startY++, startX, "Experience: %d/%d", player->exp, 100);

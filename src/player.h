@@ -37,6 +37,8 @@
 
 #define MAX_NAME_LENGTH 16
 
+typedef struct Map_ Map;
+
 typedef struct Player_ {
     WINDOW *win;
     char name[MAX_NAME_LENGTH + 1];
@@ -60,6 +62,6 @@ const char *race_str(int race);
 
 const char *class_str(int class);
 
-void draw_player(const Player *player);
+void draw_player(const Player *player, const Map *map);
 
 #endif //ADVENTURESAREWRITTENINC_PLAYER_H
