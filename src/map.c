@@ -25,7 +25,7 @@
 #include <math.h>
 #include "map.h"
 #include "imageutil.h"
-#include "simplexnoise.h"
+#include "simplexnoise/simplexnoise.h"
 #include "adventures.h"
 
 static const double PI_CONST = M_PI * 2;
