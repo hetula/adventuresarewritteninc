@@ -27,77 +27,132 @@
 const Terrain UNKNOWN = {
         "UNKNOWN\0",
         '?', /* Visual */
-        CLR_DAY_LAKE,
-        CLR_NIGHT_LAKE,
+        COLOR_DAY_LAKE,
+        COLOR_NIGHT_LAKE,
         999
 };
 
 const Terrain LAKE = {
         "Lake\0",
         '~', /* Visual */
-        CLR_DAY_LAKE,
-        CLR_NIGHT_LAKE,
+        COLOR_DAY_LAKE,
+        COLOR_NIGHT_LAKE,
         120
 };
 const Terrain BEACH = {
         "Beach\0",
         '\'',
-        CLR_DAY_BEACH,
-        CLR_NIGHT_BEACH,
+        COLOR_DAY_BEACH,
+        COLOR_NIGHT_BEACH,
         45
 };
 const Terrain GRASS = {
         "Grass\0",
         '.',
-        CLR_DAY_GRASS,
-        CLR_NIGHT_GRASS,
+        COLOR_DAY_GRASS,
+        COLOR_NIGHT_GRASS,
         45
 };
 const Terrain FOREST = {
         "Forest\0",
         '#',
-        CLR_DAY_FOREST,
-        CLR_NIGHT_FOREST,
+        COLOR_DAY_FOREST,
+        COLOR_NIGHT_FOREST,
         90
 };
 const Terrain HILL = {
         "Hill\0",
         '^',
-        CLR_DAY_HILL,
-        CLR_NIGHT_HILL,
+        COLOR_DAY_HILL,
+        COLOR_NIGHT_HILL,
         102
 };
 const Terrain MOUNTAIN = {
         "Mountain\0",
         '^',
-        CLR_DAY_MOUNTAIN,
-        CLR_NIGHT_MOUNTAIN,
+        COLOR_DAY_MOUNTAIN,
+        COLOR_NIGHT_MOUNTAIN,
         480
 };
 const Terrain SNOWY_MOUNTAIN = {
         "Mountain Peak\0",
         '^',
-        CLR_DAY_SNOWY_MOUNTAIN,
-        CLR_NIGHT_SNOWY_MOUNTAIN,
+        COLOR_DAY_SNOWY_MOUNTAIN,
+        COLOR_NIGHT_SNOWY_MOUNTAIN,
         640
 };
 
-void initialize_colors() {
-    init_pair(CLR_NIGHT_LAKE, 39, 233);
-    init_pair(CLR_NIGHT_BEACH, 11, 233);
-    init_pair(CLR_NIGHT_GRASS, 83, 233);
-    init_pair(CLR_NIGHT_FOREST, 22, 233);
-    init_pair(CLR_NIGHT_HILL, 94, 233);
-    init_pair(CLR_NIGHT_MOUNTAIN, 244, 233);
-    init_pair(CLR_NIGHT_SNOWY_MOUNTAIN, COLOR_WHITE, 233);
+const Terrain FARM = {
+        "Farm\0",
+        'F',
+        COLOR_DAY_FARM,
+        COLOR_NIGHT_FARM,
+        15
+};
 
-    init_pair(CLR_DAY_LAKE, COLOR_WHITE, 39);
-    init_pair(CLR_DAY_BEACH, COLOR_BLACK, 11);
-    init_pair(CLR_DAY_GRASS, COLOR_BLACK, 83);
-    init_pair(CLR_DAY_FOREST, COLOR_BLACK, 22);
-    init_pair(CLR_DAY_HILL, COLOR_BLACK, 94);
-    init_pair(CLR_DAY_MOUNTAIN, COLOR_BLACK, 244);
-    init_pair(CLR_DAY_SNOWY_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
+const Terrain TOWN = {
+        "Town\0",
+        'T',
+        COLOR_DAY_TOWN,
+        COLOR_NIGHT_TOWN,
+        15
+};
+
+const Terrain CITY = {
+        "City\0",
+        'C',
+        COLOR_DAY_CITY,
+        COLOR_NIGHT_CITY,
+        15
+};
+
+const Terrain METROPOLIS = {
+        "Metropolis\0",
+        'M',
+        COLOR_DAY_METROPOLIS,
+        COLOR_NIGHT_METROPOLIS,
+        15
+};
+
+void initialize_colors() {
+    init_pair(COLOR_NIGHT_LAKE, 39, 233);
+    init_pair(COLOR_NIGHT_BEACH, 11, 233);
+    init_pair(COLOR_NIGHT_GRASS, 83, 233);
+    init_pair(COLOR_NIGHT_FOREST, 22, 233);
+    init_pair(COLOR_NIGHT_HILL, 94, 233);
+    init_pair(COLOR_NIGHT_MOUNTAIN, 244, 233);
+    init_pair(COLOR_NIGHT_SNOWY_MOUNTAIN, COLOR_WHITE, 233);
+
+    init_pair(COLOR_NIGHT_FARM, 94, 238);
+    init_pair(COLOR_NIGHT_TOWN, 3, 238);
+    init_pair(COLOR_NIGHT_CITY, 3, 238);
+    init_pair(COLOR_NIGHT_METROPOLIS, 3, 238);
+
+    init_pair(COLOR_DAY_LAKE, COLOR_WHITE, 39);
+    init_pair(COLOR_DAY_BEACH, COLOR_BLACK, 11);
+    init_pair(COLOR_DAY_GRASS, COLOR_BLACK, 83);
+    init_pair(COLOR_DAY_FOREST, COLOR_BLACK, 22);
+    init_pair(COLOR_DAY_HILL, COLOR_BLACK, 94);
+    init_pair(COLOR_DAY_MOUNTAIN, COLOR_BLACK, 244);
+    init_pair(COLOR_DAY_SNOWY_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
+
+    init_pair(COLOR_DAY_FARM, 233, 94);
+    init_pair(COLOR_DAY_TOWN, 233, 3);
+    init_pair(COLOR_DAY_CITY, 233, 3);
+    init_pair(COLOR_DAY_METROPOLIS, 233, 3);
+
+}
+
+int is_terrain_town(int terrain) {
+    switch (terrain) {
+        case TERRAIN_FARM:
+        case TERRAIN_TOWN:
+        case TERRAIN_CITY:
+        case TERRAIN_METROPOLIS:
+            return TRUE;
+        default:
+            return FALSE;
+    }
 }
 
 Terrain *get_terrain(int terrain) {
@@ -116,6 +171,14 @@ Terrain *get_terrain(int terrain) {
             return &MOUNTAIN;
         case TERRAIN_SNOWY_MOUNTAIN:
             return &SNOWY_MOUNTAIN;
+        case TERRAIN_FARM:
+            return &FARM;
+        case TERRAIN_TOWN:
+            return &TOWN;
+        case TERRAIN_CITY:
+            return &CITY;
+        case TERRAIN_METROPOLIS:
+            return &METROPOLIS;
         default:
             return &UNKNOWN;
     }

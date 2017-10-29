@@ -24,21 +24,31 @@
 #ifndef ADVENTURESAREWRITTENINC_TERRAIN_H
 #define ADVENTURESAREWRITTENINC_TERRAIN_H
 
-#define CLR_DAY_LAKE 1
-#define CLR_DAY_BEACH 2
-#define CLR_DAY_GRASS 3
-#define CLR_DAY_FOREST 4
-#define CLR_DAY_HILL 5
-#define CLR_DAY_MOUNTAIN 6
-#define CLR_DAY_SNOWY_MOUNTAIN 7
+#define COLOR_DAY_LAKE 1
+#define COLOR_DAY_BEACH 2
+#define COLOR_DAY_GRASS 3
+#define COLOR_DAY_FOREST 4
+#define COLOR_DAY_HILL 5
+#define COLOR_DAY_MOUNTAIN 6
+#define COLOR_DAY_SNOWY_MOUNTAIN 7
 
-#define CLR_NIGHT_LAKE 8
-#define CLR_NIGHT_BEACH 9
-#define CLR_NIGHT_GRASS 10
-#define CLR_NIGHT_FOREST 11
-#define CLR_NIGHT_HILL 12
-#define CLR_NIGHT_MOUNTAIN 13
-#define CLR_NIGHT_SNOWY_MOUNTAIN 14
+#define COLOR_NIGHT_LAKE 8
+#define COLOR_NIGHT_BEACH 9
+#define COLOR_NIGHT_GRASS 10
+#define COLOR_NIGHT_FOREST 11
+#define COLOR_NIGHT_HILL 12
+#define COLOR_NIGHT_MOUNTAIN 13
+#define COLOR_NIGHT_SNOWY_MOUNTAIN 14
+
+#define COLOR_DAY_FARM 64
+#define COLOR_DAY_TOWN 65
+#define COLOR_DAY_CITY 66
+#define COLOR_DAY_METROPOLIS 67
+
+#define COLOR_NIGHT_FARM 68
+#define COLOR_NIGHT_TOWN 69
+#define COLOR_NIGHT_CITY 70
+#define COLOR_NIGHT_METROPOLIS 71
 
 #define TERRAIN_LAKE 1
 #define TERRAIN_BEACH 2
@@ -47,6 +57,11 @@
 #define TERRAIN_HILL 5
 #define TERRAIN_MOUNTAIN 6
 #define TERRAIN_SNOWY_MOUNTAIN 7
+
+#define TERRAIN_FARM 64
+#define TERRAIN_TOWN 65
+#define TERRAIN_CITY 66
+#define TERRAIN_METROPOLIS 67
 
 struct Terrain_ {
     char name[16];
@@ -67,7 +82,14 @@ extern Terrain HILL;
 extern Terrain MOUNTAIN;
 extern Terrain SNOWY_MOUNTAIN;
 
+extern Terrain FARM;
+extern Terrain TOWN;
+extern Terrain CITY;
+extern Terrain METROPOLIS;
+
 void initialize_colors();
+
+int is_terrain_town(int terrain);
 
 Terrain *get_terrain(int terrain);
 
