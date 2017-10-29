@@ -31,15 +31,15 @@
 #include "adventures.h"
 
 typedef struct MapTile_ {
-    uint8_t terrain_type;
-    uint16_t x;
-    uint16_t y;
+    unsigned int terrain_type;
+    unsigned int x;
+    unsigned int y;
 } MapTile;
 
 typedef struct Map_ {
-    WINDOW *win;
     int width;
     int height;
+    WINDOW *win;
     MapTile **data;
 } Map;
 

@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 #include <ncurses.h>
+#include "map.h"
 
 #ifndef ADVENTURESAREWRITTENINC_UTILS_H
 #define ADVENTURESAREWRITTENINC_UTILS_H
@@ -29,5 +30,9 @@
 void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char *string);
 
 int get_rnd(int max);
+
+double manhattan_distance_t(MapTile *tile1, MapTile *tile2);
+
+double manhattan_distance(int x1, int y1, int x2, int y2);
 
 #endif //ADVENTURESAREWRITTENINC_UTILS_H

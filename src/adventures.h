@@ -30,4 +30,10 @@ static const size_t MAP_FULL_SIZE = MAP_SIZE * MAP_SIZE;
 static const int MAP_WINDOW_WIDTH = 48;
 static const int MAP_WINDOW_HEIGHT = 24;
 
+static const int WORLD_WINDOW_WIDTH = 32;
+static const int WORLD_WINDOW_HEIGHT = 4;
+
+static const int PLAYER_WINDOW_WIDTH = 32;
+static const int PLAYER_WINDOW_HEIGHT = 16;
+
 #endif //ADVENTURESAREWRITTENINC_ADVENTURES_H

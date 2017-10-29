@@ -31,51 +31,6 @@ const long MONTH = MINUTES_PER_HOUR * HOURS_PER_DAY * DAYS_PER_MONTH;
 const long DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
 const long HOUR = MINUTES_PER_HOUR;
 
-int validate_size_input(int input) {
-    switch (input) {
-        case '1':
-            return 0;
-        case '2':
-            return 1;
-        case '3':
-            return 2;
-        case '4':
-            return 3;
-        case '5':
-            return 4;
-        default:
-            return -1;
-    }
-}
-
-void input_world_params(WorldParams *worldParams) {
-    refresh();
-    printdl(stdscr, 0, 5, 16, "Let's create the world!");
-    WINDOW *setup = newwin(24, 64, 7, 0);
-    unsigned int w[] = {512, 1024, 2048, 4096, 8192};
-    unsigned int h[] = {512, 1024, 2048, 4096, 8192};
-
-    mvwprintw(setup, 0, 0, "Select World Size:");
-    for (int i = 0; i < 5; i++) {
-        mvwprintw(setup, i + 1, 0, "[%d] %dx%d", i + 1, w[i], h[i]);
-        wrefresh(setup);
-    }
-
-    int sel;
-    do {
-        sel = validate_size_input(getch());
-    } while (sel == -1);
-    worldParams->width = w[sel];
-    worldParams->height = h[sel];
-
-    wclear(setup);
-    wrefresh(setup);
-    delwin(setup);
-    move(5, 0);
-    clrtoeol();
-    refresh();
-}
-
 long get_year(long time) {
     return BASE_YEAR + time / YEAR;
 }

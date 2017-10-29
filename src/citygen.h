@@ -21,32 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <stdio.h>
-#include "log.h"
+#ifndef ADVENTURESAREWRITTENINC_CITYGEN_H
+#define ADVENTURESAREWRITTENINC_CITYGEN_H
 
-const char *PATH = "log.txt";
+#include "map.h"
 
-void init_log() {
-    FILE *f = fopen(PATH, "w");
-    fprintf(f, "Log start!\n");
-    fclose(f);
-}
+typedef struct City_ {
+    int x;
+    int y;
+    unsigned int terrain_type;
+    char name[16];
+} City;
 
-void log_d(char *log) {
-    FILE *f = fopen(PATH, "a");
-    fprintf(f, log);
-    fprintf(f, "\n");
-    fclose(f);
-}
+void generate_cities(Map *map);
 
-void log_l(char *log) {
-    FILE *f = fopen(PATH, "a");
-    fprintf(f, log);
-    fclose(f);
-}
-
-void log_nd(long i) {
-    FILE *f = fopen(PATH, "a");
-    fprintf(f, "%zd\n", i);
-    fclose(f);
-}
+#endif //ADVENTURESAREWRITTENINC_CITYGEN_H

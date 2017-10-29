@@ -27,6 +27,7 @@
 #include "imageutil.h"
 #include "simplexnoise/simplexnoise.h"
 #include "adventures.h"
+#include "citygen.h"
 
 static const double PI_CONST = M_PI * 2;
 
@@ -86,7 +87,6 @@ gen_noise(SimplexNoiseContext *ctx, double x, double y, double w, double h, int 
 }
 
 void generate_map(Map *map, long seed, int save_data) {
-    initialize_colors();
     SimplexNoiseContext *baseCtx;
     simplex_noise_init(seed, &baseCtx);
     FILE *f = NULL;
@@ -96,8 +96,8 @@ void generate_map(Map *map, long seed, int save_data) {
     int w = map->width;
     int h = map->height;
     double noise;
-    for (uint16_t y = 0; y < h; y++) {
-        for (uint16_t x = 0; x < w; x++) {
+    for (unsigned int y = 0; y < h; y++) {
+        for (unsigned int x = 0; x < w; x++) {
             noise = gen_noise(baseCtx, x, y, w, h, 72);
             map->data[x + y * w]->terrain_type = map_noise_to_terrain(noise);
             map->data[x + y * w]->y = y;
@@ -132,10 +132,12 @@ void generate_map(Map *map, long seed, int save_data) {
         }
     }
     simplex_noise_free(waterCtx);
+    generate_cities(map);
     if (save_data == TRUE) {
         fclose(f);
         save_map(map);
     }
+    initialize_colors();
 }
 
 Terrain *get_terrain_at(int x, int y, const Player *player, const Map *map) {

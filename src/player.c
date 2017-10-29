@@ -26,10 +26,8 @@
 #include <memory.h>
 #include "player.h"
 #include "map.h"
-#include "log.h"
 
 void init_character(Player *player) {
-    log_d("Initializing Player");
     player->x = 0;
     player->y = 0;
     player->race = RACE_HUMAN;

@@ -36,7 +36,6 @@
 #include "adventures.h"
 #include "intro.h"
 #include "charactercreator.h"
-#include "log.h"
 #include "utils.h"
 
 #define MOVE_LEFT (-1)
@@ -86,9 +85,8 @@ void move_plr(World *world, Map *map, Player *player, int x, int y) {
     world->time += terrain->travel_cross_time + get_rnd(30);
 }
 
-void begin_adventure(Map *map, World *world, Player *player, int save_data) {
+void begin_adventure(Map *map, World *world, Player *player) {
     init_world(world);
-    generate_map(map, random(), save_data);
     clear();
     refresh();
 
@@ -124,62 +122,54 @@ int main(int argc, char **argv) {
     if (check_compatible() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
-    init_log();
     init_curses();
-    Player player;
-    init_character(&player);
-    WorldParams worldParams = {0, MAP_SIZE, MAP_SIZE};
 
-    play_intro(argc == 0 ? TRUE : FALSE);
-    if (argc == 0) {
+    Map map = {MAP_SIZE, MAP_SIZE};
+    Player player;
+    World world;
+
+    init_character(&player);
+
+    play_intro(argc == 1 ? TRUE : FALSE);
+    if (argc == 1) {
         create_player(&player);
     }
-    unsigned int seed = worldParams.seed == 0 ? (unsigned int) time(NULL) : worldParams.seed;
-    log_l("Seed is ");
-    log_nd(seed);
-    mvprintw(5, 0, " Creating world...\n\t-> Seed:   %u\n\t-> Width:  %u\n\t-> Height: %u",
-             seed, worldParams.width, worldParams.height);
+    unsigned int seed = (unsigned int) time(NULL);
+    mvprintw(5, 1, "Creating world...\n\t-> Seed:   %u\n\t-> Width:  %u\n\t-> Height: %u",
+             seed, MAP_SIZE, MAP_SIZE);
     srandom(seed);
     refresh();
 
-    unsigned int mapWidth = worldParams.width;
-    unsigned int mapHeight = worldParams.height;
+    map.data = calloc(MAP_FULL_SIZE, sizeof(MapTile *));
 
-    MapTile **tiles = calloc(MAP_FULL_SIZE, sizeof(MapTile *));
     for (int i = 0; i < MAP_FULL_SIZE; i++) {
-        tiles[i] = malloc(sizeof(MapTile));
-        tiles[i]->terrain_type = 0;
-        tiles[i]->x = 0;
-        tiles[i]->y = 0;
+        map.data[i] = malloc(sizeof(MapTile));
+        map.data[i]->terrain_type = 0;
+        map.data[i]->x = 0;
+        map.data[i]->y = 0;
     }
-    Map map = {newwin(MAP_WINDOW_HEIGHT, MAP_WINDOW_WIDTH, 0, 0), mapWidth, mapHeight, tiles};
-    log_l("MapTile size: ");
-    log_nd(sizeof(MapTile));
-    log_l("MapTiles size: ");
-    log_nd(sizeof(MapTile) * MAP_FULL_SIZE / 1024);
-    log_l("MapTile Pointer size: ");
-    log_nd(sizeof(MapTile *));
-    log_l("MapTile Array size: ");
-    log_nd(sizeof(MapTile *) * MAP_FULL_SIZE / 1024);
+    generate_map(&map, random(), argc != 1 ? TRUE : FALSE);
 
-    World world;
-    world.win = newwin(4, 32, 0, MAP_WINDOW_WIDTH + 1);
-    player.win = newwin(16, 32, 4, MAP_WINDOW_WIDTH + 1);
 
-    player.x = get_rnd(mapWidth);
-    player.y = get_rnd(mapHeight);
+    map.win = newwin(MAP_WINDOW_HEIGHT, MAP_WINDOW_WIDTH, 0, 0);
+    world.win = newwin(WORLD_WINDOW_HEIGHT, WORLD_WINDOW_WIDTH, 0, MAP_WINDOW_WIDTH + 1);
+    player.win = newwin(PLAYER_WINDOW_HEIGHT, PLAYER_WINDOW_WIDTH, WORLD_WINDOW_HEIGHT,
+                        MAP_WINDOW_WIDTH + 1);
+
+    player.x = get_rnd(map.width);
+    player.y = get_rnd(map.height);
     world.time = get_rnd(3600) + get_rnd(3600) + get_rnd(3600) + get_rnd(3600);
 
     cbreak();
-    begin_adventure(&map, &world, &player, argc == 0 ? FALSE : TRUE);
+    begin_adventure(&map, &world, &player);
     delwin(map.win);
     delwin(world.win);
     delwin(player.win);
     endwin();
 
     for (int i = 0; i < MAP_FULL_SIZE; i++) {
-        free(tiles[i]);
+        free(map.data[i]);
     }
-    free(tiles);
+    free(map.data);
     return EXIT_SUCCESS;
 }

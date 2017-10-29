@@ -47,6 +47,14 @@ int get_rnd(int max) {
     long retval;
     do {
         retval = random() / divisor;
-    } while (retval > max);
+    } while (retval >= max);
     return (int) retval; // Max is type int so result can't be any bigger
+}
+
+double manhattan_distance_t(MapTile *tile1, MapTile *tile2) {
+    return manhattan_distance(tile1->x, tile1->y, tile2->x, tile2->y);
+}
+
+double manhattan_distance(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
 }
