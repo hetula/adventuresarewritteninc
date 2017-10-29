@@ -53,7 +53,7 @@ struct Terrain_ {
     char visual;
     int color_day;
     int color_night;
-    float roughness;
+    float travel_cross_time;
 };
 
 typedef const struct Terrain_ Terrain;

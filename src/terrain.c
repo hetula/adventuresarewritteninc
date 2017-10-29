@@ -29,49 +29,49 @@ const Terrain LAKE = {
         '~', /* Visual */
         CLR_DAY_LAKE,
         CLR_NIGHT_LAKE,
-        1
+        120
 };
 const Terrain BEACH = {
         "Beach\0",
         '\'',
         CLR_DAY_BEACH,
         CLR_NIGHT_BEACH,
-        1
+        45
 };
 const Terrain GRASS = {
         "Grass\0",
         '.',
         CLR_DAY_GRASS,
         CLR_NIGHT_GRASS,
-        1
+        45
 };
 const Terrain FOREST = {
         "Forest\0",
         '#',
         CLR_DAY_FOREST,
         CLR_NIGHT_FOREST,
-        1
+        90
 };
 const Terrain HILL = {
         "Hill\0",
         '^',
         CLR_DAY_HILL,
         CLR_NIGHT_HILL,
-        1
+        102
 };
 const Terrain MOUNTAIN = {
         "Mountain\0",
         '^',
         CLR_DAY_MOUNTAIN,
         CLR_NIGHT_MOUNTAIN,
-        1
+        480
 };
 const Terrain SNOWY_MOUNTAIN = {
         "Mountain Peak\0",
         '^',
         CLR_DAY_SNOWY_MOUNTAIN,
         CLR_NIGHT_SNOWY_MOUNTAIN,
-        1
+        640
 };
 
 void initialize_colors() {

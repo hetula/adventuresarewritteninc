@@ -89,7 +89,7 @@ void generate_map(Map *map, long seed, int save_data) {
     initialize_colors();
     SimplexNoiseContext *baseCtx;
     simplex_noise_init(seed, &baseCtx);
-    FILE *f;
+    FILE *f = NULL;
     if (save_data == TRUE) {
         f = fopen("noise_data.txt", "w");
     }

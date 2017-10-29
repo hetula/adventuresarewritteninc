@@ -84,7 +84,8 @@ void move_plr(World *world, Map *map, Player *player, int x, int y) {
     if (player->y >= map->height) {
         player->y = 0;
     }
-    world->time += get_rnd(MINUTES_PER_HOUR * 2);
+    Terrain *terrain = terrain_at(map, player->x, player->y);
+    world->time += terrain->travel_cross_time + get_rnd(30);
 }
 
 void begin_adventure(Map *map, World *world, Player *player, int save_data) {
@@ -149,6 +150,10 @@ int main(int argc, char **argv) {
     World world;
     world.win = newwin(4, 32, 0, MAP_WINDOW_WIDTH + 1);
     player.win = newwin(16, 32, 4, MAP_WINDOW_WIDTH + 1);
+
+    player.x = get_rnd(mapWidth);
+    player.y = get_rnd(mapHeight);
+    world.time = get_rnd(3600) + get_rnd(3600) + get_rnd(3600) + get_rnd(3600);
 
     cbreak();
     begin_adventure(&map, &world, &player, argc == 0 ? FALSE : TRUE);

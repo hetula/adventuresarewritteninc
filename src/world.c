@@ -120,7 +120,6 @@ int is_night(long time) {
 }
 
 void init_world(World *world) {
-    world->time = 0;
 }
 
 void draw_time(WINDOW *win, int x, int y, long time) {
@@ -131,6 +130,7 @@ void draw_time(WINDOW *win, int x, int y, long time) {
 void draw_world(World *world) {
     werase(world->win);
     mvwprintw(world->win, 0, 0, "Adventures are written in C");
+    wrefresh(world->win);
     int startX = 0;
     int startY = 1;
     draw_time(world->win, startX, startY, world->time);
