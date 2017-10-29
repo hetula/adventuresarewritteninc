@@ -24,6 +24,6 @@
 #ifndef ADVENTURESAREWRITTENINC_INTRO_H
 #define ADVENTURESAREWRITTENINC_INTRO_H
 
-void play_intro();
+void play_intro(int animate);
 
 #endif //ADVENTURESAREWRITTENINC_INTRO_H

@@ -30,7 +30,7 @@
 
 static const double PI_CONST = M_PI * 2;
 
-int map_noise_to_terrain(double noise) {
+uint8_t map_noise_to_terrain(double noise) {
     if (noise < .35) {
         return TERRAIN_FOREST;
     }
@@ -49,14 +49,14 @@ int map_noise_to_terrain(double noise) {
     return TERRAIN_SNOWY_MOUNTAIN;
 }
 
-int map_noise_to_water(double noise) {
+uint8_t map_noise_to_water(double noise) {
     if (noise < .38) {
         return TERRAIN_LAKE;
     }
     if (noise < .42) {
         return TERRAIN_BEACH;
     }
-    return -1;
+    return 0;
 }
 
 int can_map_water(int terrain) {
@@ -96,10 +96,12 @@ void generate_map(Map *map, long seed, int save_data) {
     int w = map->width;
     int h = map->height;
     double noise;
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            noise = gen_noise(baseCtx, x, y, w, h, 48);
-            map->data[x + y * w] = map_noise_to_terrain(noise);
+    for (uint16_t y = 0; y < h; y++) {
+        for (uint16_t x = 0; x < w; x++) {
+            noise = gen_noise(baseCtx, x, y, w, h, 72);
+            map->data[x + y * w]->terrain_type = map_noise_to_terrain(noise);
+            map->data[x + y * w]->y = y;
+            map->data[x + y * w]->x = x;
             if (save_data == TRUE) {
                 fprintf(f, "%f\n", noise);
             }
@@ -112,19 +114,19 @@ void generate_map(Map *map, long seed, int save_data) {
 
     SimplexNoiseContext *waterCtx;
     simplex_noise_init(seed / 2, &waterCtx);
-    int terrain;
+    uint8_t terrain;
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
-            if (can_map_water(map->data[x + y * w]) == FALSE) {
+            if (can_map_water(map->data[x + y * w]->terrain_type) == FALSE) {
                 continue;
             }
-            noise = gen_noise(waterCtx, x, y, w, h, 72);
+            noise = gen_noise(waterCtx, x, y, w, h, 144);
             terrain = map_noise_to_water(noise);
             if (save_data == TRUE) {
                 fprintf(f, "%f\n", noise);
             }
-            if (terrain != -1) {
-                map->data[x + y * w] = terrain;
+            if (terrain != 0) {
+                map->data[x + y * w]->terrain_type = terrain;
 
             }
         }
@@ -152,11 +154,11 @@ Terrain *get_terrain_at(int x, int y, const Player *player, const Map *map) {
     if (realY >= map->height) {
         realY = realY - map->height;
     }
-    return get_terrain(map->data[realX + realY * map->width]);
+    return get_terrain(map->data[realX + realY * map->width]->terrain_type);
 }
 
 const Terrain *terrain_at(const Map *map, int x, int y) {
-    return get_terrain(map->data[x + y * map->width]);
+    return get_terrain(map->data[x + y * map->width]->terrain_type);
 }
 
 void draw_map(const Map *map, const World *world, const Player *player) {

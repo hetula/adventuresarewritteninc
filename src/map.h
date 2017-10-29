@@ -28,12 +28,19 @@
 #include "player.h"
 #include "world.h"
 #include "terrain.h"
+#include "adventures.h"
+
+typedef struct MapTile_ {
+    uint8_t terrain_type;
+    uint16_t x;
+    uint16_t y;
+} MapTile;
 
 typedef struct Map_ {
     WINDOW *win;
     int width;
     int height;
-    int *data;
+    MapTile **data;
 } Map;
 
 void generate_map(Map *map, long seed, int save_data);

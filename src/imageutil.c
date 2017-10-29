@@ -193,7 +193,7 @@ void save_map(const Map *map) {
     for (y = 0; y < map->height; y++) {
         for (x = 0; x < map->width; x++) {
             pixel_t *pxl = pixel_at(&png_map, x, y);
-            map_terrain(pxl, map->data[x + y * map->width]);
+            map_terrain(pxl, map->data[x + y * map->width]->terrain_type);
         }
     }
     save_png_to_file(&png_map, "map.png");

@@ -40,13 +40,13 @@
 #define CLR_NIGHT_MOUNTAIN 13
 #define CLR_NIGHT_SNOWY_MOUNTAIN 14
 
-#define TERRAIN_LAKE 0
-#define TERRAIN_BEACH 1
-#define TERRAIN_GRASS 2
-#define TERRAIN_FOREST 3
-#define TERRAIN_HILL 4
-#define TERRAIN_MOUNTAIN 5
-#define TERRAIN_SNOWY_MOUNTAIN 6
+#define TERRAIN_LAKE 1
+#define TERRAIN_BEACH 2
+#define TERRAIN_GRASS 3
+#define TERRAIN_FOREST 4
+#define TERRAIN_HILL 5
+#define TERRAIN_MOUNTAIN 6
+#define TERRAIN_SNOWY_MOUNTAIN 7
 
 struct Terrain_ {
     char name[16];
@@ -58,6 +58,7 @@ struct Terrain_ {
 
 typedef const struct Terrain_ Terrain;
 
+extern Terrain UNKNOWN;
 extern Terrain LAKE;
 extern Terrain BEACH;
 extern Terrain GRASS;

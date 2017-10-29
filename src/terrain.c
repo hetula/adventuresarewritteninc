@@ -24,6 +24,14 @@
 #include <ncurses.h>
 #include "terrain.h"
 
+const Terrain UNKNOWN = {
+        "UNKNOWN\0",
+        '?', /* Visual */
+        CLR_DAY_LAKE,
+        CLR_NIGHT_LAKE,
+        999
+};
+
 const Terrain LAKE = {
         "Lake\0",
         '~', /* Visual */
@@ -109,6 +117,6 @@ Terrain *get_terrain(int terrain) {
         case TERRAIN_SNOWY_MOUNTAIN:
             return &SNOWY_MOUNTAIN;
         default:
-            return NULL;
+            return &UNKNOWN;
     }
 }

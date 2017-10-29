@@ -25,6 +25,7 @@
 #include <memory.h>
 #include "player.h"
 #include "utils.h"
+#include "log.h"
 
 void init() {
     echo();
@@ -117,6 +118,7 @@ void ask_class(WINDOW *win, Player *player) {
 }
 
 void create_player(Player *player) {
+    log_d("Creating character!");
     printdl(stdscr, 0, 5, 16, "Let's create a character!");
     WINDOW *setup = newwin(24, 64, 6, 0);
     init();

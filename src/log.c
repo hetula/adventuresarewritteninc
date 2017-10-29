@@ -21,23 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <unistd.h>
-#include "intro.h"
-#include "utils.h"
+#include <stdio.h>
+#include "log.h"
 
-void play_intro(int animate) {
-    init_pair(1, 12, COLOR_BLACK);
-    attron(COLOR_PAIR(1));
-    char title[] = "    _      _             _                                               _ _   _              _         ___ \n"
-            "   /_\\  __| |_ _____ _ _| |_ _  _ _ _ ___ ___  __ _ _ _ ___  __ __ ___ _(_) |_| |_ ___ _ _   (_)_ _    / __|\n"
-            "  / _ \\/ _` \\ V / -_) ' \\  _| || | '_/ -_|_-< / _` | '_/ -_) \\ V  V / '_| |  _|  _/ -_) ' \\  | | ' \\  | (__ \n"
-            " /_/ \\_\\__,_|\\_/\\___|_||_\\__|\\_,_|_| \\___/__/ \\__,_|_| \\___|  \\_/\\_/|_| |_|\\__|\\__\\___|_||_| |_|_||_|  \\___|\n"
-            "";
-    if (animate == TRUE) {
-        printdl(stdscr, 0, 0, 2, title);
-        sleep(1);
-    } else {
-        printdl(stdscr, 0, 0, 0, title);
-    }
-    attroff(COLOR_PAIR(1));
+const char *PATH = "log.txt";
+
+void init_log() {
+    FILE *f = fopen(PATH, "w");
+    fprintf(f, "Log start!\n");
+    fclose(f);
+}
+
+void log_d(char *log) {
+    FILE *f = fopen(PATH, "a");
+    fprintf(f, log);
+    fprintf(f, "\n");
+    fclose(f);
+}
+
+void log_l(char *log) {
+    FILE *f = fopen(PATH, "a");
+    fprintf(f, log);
+    fclose(f);
+}
+
+void log_nd(long i) {
+    FILE *f = fopen(PATH, "a");
+    fprintf(f, "%zd\n", i);
+    fclose(f);
 }

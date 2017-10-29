@@ -36,6 +36,7 @@
 #include "adventures.h"
 #include "intro.h"
 #include "charactercreator.h"
+#include "log.h"
 
 #define MOVE_LEFT (-1)
 #define MOVE_RIGHT 1
@@ -126,27 +127,44 @@ int main(int argc, char **argv) {
     if (check_compatible() == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
+    init_log();
     init_curses();
     Player player;
     init_character(&player);
-    WorldParams worldParams = {0, 512, 512};
+    WorldParams worldParams = {0, MAP_SIZE, MAP_SIZE};
 
+    play_intro(argc == 0 ? TRUE : FALSE);
     if (argc == 0) {
-        play_intro();
         create_player(&player);
-        input_world_params(&worldParams);
     }
     unsigned int seed = worldParams.seed == 0 ? (unsigned int) time(NULL) : worldParams.seed;
-    srandom(seed);
-    mvprintw(5, 0, " Creating world...\n\t-> Seed:   %d\n\t-> Width:  %d\n\t-> Height: %d",
+    log_l("Seed is ");
+    log_nd(seed);
+    mvprintw(5, 0, " Creating world...\n\t-> Seed:   %u\n\t-> Width:  %u\n\t-> Height: %u",
              seed, worldParams.width, worldParams.height);
+    srandom(seed);
     refresh();
 
     unsigned int mapWidth = worldParams.width;
     unsigned int mapHeight = worldParams.height;
 
-    int *mapData = calloc(mapWidth * mapHeight, sizeof(int));
-    Map map = {newwin(MAP_WINDOW_HEIGHT, MAP_WINDOW_WIDTH, 0, 0), mapWidth, mapHeight, mapData};
+    MapTile **tiles = calloc(MAP_FULL_SIZE, sizeof(MapTile *));
+    for (int i = 0; i < MAP_FULL_SIZE; i++) {
+        tiles[i] = malloc(sizeof(MapTile));
+        tiles[i]->terrain_type = 0;
+        tiles[i]->x = 0;
+        tiles[i]->y = 0;
+    }
+    Map map = {newwin(MAP_WINDOW_HEIGHT, MAP_WINDOW_WIDTH, 0, 0), mapWidth, mapHeight, tiles};
+    log_l("MapTile size: ");
+    log_nd(sizeof(MapTile));
+    log_l("MapTiles size: ");
+    log_nd(sizeof(MapTile) * MAP_FULL_SIZE / 1024);
+    log_l("MapTile Pointer size: ");
+    log_nd(sizeof(MapTile *));
+    log_l("MapTile Array size: ");
+    log_nd(sizeof(MapTile *) * MAP_FULL_SIZE / 1024);
+
     World world;
     world.win = newwin(4, 32, 0, MAP_WINDOW_WIDTH + 1);
     player.win = newwin(16, 32, 4, MAP_WINDOW_WIDTH + 1);
@@ -161,6 +179,10 @@ int main(int argc, char **argv) {
     delwin(world.win);
     delwin(player.win);
     endwin();
-    free(mapData);
+
+    for (int i = 0; i < MAP_FULL_SIZE; i++) {
+        free(tiles[i]);
+    }
+    free(tiles);
     return EXIT_SUCCESS;
 }

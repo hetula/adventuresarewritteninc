@@ -12,7 +12,7 @@ include_directories(${CURSES_INCLUDE_DIR})
 find_package(PNG REQUIRED)
 include_directories(${PNG_INCLUDE_DIR})
 
-set(SOURCE_FILES src/adventures.c src/map.h src/map.c src/imageutil.c src/imageutil.h src/simplexnoise/simplexnoise.c src/simplexnoise/simplexnoise.h src/player.c src/player.h src/adventures.h src/world.c src/world.h src/terrain.c src/terrain.h src/charactercreator.h src/charactercreator.c src/intro.c src/intro.h src/utils.c src/utils.h src/astar/AStar.c src/astar/AStar.h)
+set(SOURCE_FILES src/adventures.c src/map.h src/map.c src/imageutil.c src/imageutil.h src/simplexnoise/simplexnoise.c src/simplexnoise/simplexnoise.h src/player.c src/player.h src/adventures.h src/world.c src/world.h src/terrain.c src/terrain.h src/charactercreator.h src/charactercreator.c src/intro.c src/intro.h src/utils.c src/utils.h src/astar/AStar.c src/astar/AStar.h src/log.c src/log.h)
 add_executable(adventuresarewritteninc ${SOURCE_FILES})
 target_link_libraries(adventuresarewritteninc m)
 target_link_libraries(adventuresarewritteninc ${CURSES_LIBRARIES})

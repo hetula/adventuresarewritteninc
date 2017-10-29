@@ -24,6 +24,9 @@
 #ifndef ADVENTURESAREWRITTENINC_ADVENTURES_H
 #define ADVENTURESAREWRITTENINC_ADVENTURES_H
 
+static const int MAP_SIZE = 1024;
+static const size_t MAP_FULL_SIZE = MAP_SIZE * MAP_SIZE;
+
 static const int MAP_WINDOW_WIDTH = 48;
 static const int MAP_WINDOW_HEIGHT = 24;
 
