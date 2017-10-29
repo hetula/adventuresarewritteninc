@@ -37,6 +37,7 @@
 #include "intro.h"
 #include "charactercreator.h"
 #include "log.h"
+#include "utils.h"
 
 #define MOVE_LEFT (-1)
 #define MOVE_RIGHT 1
@@ -64,10 +65,6 @@ void init_curses() {
     curs_set(FALSE);
     keypad(stdscr, TRUE);
     start_color();
-}
-
-static inline int get_rnd(int max) {
-    return (int) (random() % max);
 }
 
 void move_plr(World *world, Map *map, Player *player, int x, int y) {

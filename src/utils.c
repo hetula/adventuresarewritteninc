@@ -24,6 +24,7 @@
 #include <memory.h>
 #include "utils.h"
 #include <unistd.h>
+#include <stdlib.h>
 
 void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char *string) {
     size_t l = strlen(string);
@@ -39,4 +40,13 @@ void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char 
         x++;
         usleep(delayMs * 1000);
     }
+}
+
+int get_rnd(int max) {
+    int divisor = RAND_MAX / (max + 1);
+    long retval;
+    do {
+        retval = random() / divisor;
+    } while (retval > max);
+    return (int) retval; // Max is type int so result can't be any bigger
 }

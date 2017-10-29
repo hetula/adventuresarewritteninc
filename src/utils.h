@@ -28,4 +28,6 @@
 
 void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char *string);
 
+int get_rnd(int max);
+
 #endif //ADVENTURESAREWRITTENINC_UTILS_H
