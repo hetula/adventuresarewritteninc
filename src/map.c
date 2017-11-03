@@ -31,7 +31,7 @@
 
 static const double PI_CONST = M_PI * 2;
 
-uint8_t map_noise_to_terrain(double noise) {
+unsigned int map_noise_to_terrain(double noise) {
     if (noise < .35) {
         return TERRAIN_FOREST;
     }
@@ -50,7 +50,7 @@ uint8_t map_noise_to_terrain(double noise) {
     return TERRAIN_SNOWY_MOUNTAIN;
 }
 
-uint8_t map_noise_to_water(double noise) {
+unsigned int map_noise_to_water(double noise) {
     if (noise < .38) {
         return TERRAIN_LAKE;
     }
@@ -59,6 +59,74 @@ uint8_t map_noise_to_water(double noise) {
     }
     return 0;
 }
+
+unsigned int blend_noise_as_moisture(double noise, unsigned int old_terrain_type) {
+    switch (old_terrain_type) {
+        case TERRAIN_GRASS:
+            if (noise < .2) {
+                return TERRAIN_DESERT;
+            }
+            if (noise < .4) {
+                return TERRAIN_PLAINS;
+            }
+            if (noise > .7) {
+                return TERRAIN_SWAMP;
+            }
+            break;
+        case TERRAIN_HILL:
+            if (noise > .7) {
+                return TERRAIN_GRASS_HILL;
+            }
+            break;
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+unsigned int blend_noise_as_temperature(double noise, unsigned int old_terrain_type) {
+    switch (old_terrain_type) {
+        case TERRAIN_GRASS:
+            if (noise < .2) {
+                return TERRAIN_SNOW_PLAINS;
+            }
+            if (noise > .7) {
+                return TERRAIN_DESERT;
+            }
+            break;
+        case TERRAIN_PLAINS:
+            if (noise < .3) {
+                return TERRAIN_WASTELAND;
+            }
+            if (noise > .8) {
+                return TERRAIN_DESERT;
+            }
+            break;
+        case TERRAIN_FOREST:
+            if (noise < .3) {
+                return TERRAIN_SNOW_FOREST;
+            }
+            if (noise < .5) {
+                return TERRAIN_PINE_FOREST;
+            }
+            if (noise > .8) {
+                return TERRAIN_JUNGLE;
+            }
+            break;
+        case TERRAIN_HILL:
+            if (noise > .6) {
+                return TERRAIN_GRASS_HILL;
+            }
+            if (noise > .9) {
+                return TERRAIN_JUNGLE;
+            }
+            break;
+        default:
+            return 0;
+    }
+    return 0;
+}
+
 
 int can_map_water(int terrain) {
     switch (terrain) {
@@ -71,9 +139,7 @@ int can_map_water(int terrain) {
     }
 }
 
-double
-gen_noise(SimplexNoiseContext *ctx, double x, double y, double w, double h, int feature_size) {
-
+double gen_noise(SimplexNoiseContext *ctx, double x, double y, double w, double h, int feature_size) {
     double dx = feature_size;
     double dy = feature_size;
     double s = x / w;
@@ -98,7 +164,7 @@ void generate_map(Map *map, long seed, int save_data) {
     double noise;
     for (unsigned int y = 0; y < h; y++) {
         for (unsigned int x = 0; x < w; x++) {
-            noise = gen_noise(baseCtx, x, y, w, h, 72);
+            noise = gen_noise(baseCtx, x, y, w, h, BASE_SIZE);
             map->data[x + y * w]->terrain_type = map_noise_to_terrain(noise);
             map->data[x + y * w]->y = y;
             map->data[x + y * w]->x = x;
@@ -114,13 +180,13 @@ void generate_map(Map *map, long seed, int save_data) {
 
     SimplexNoiseContext *waterCtx;
     simplex_noise_init(seed / 2, &waterCtx);
-    uint8_t terrain;
+    unsigned int terrain;
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
             if (can_map_water(map->data[x + y * w]->terrain_type) == FALSE) {
                 continue;
             }
-            noise = gen_noise(waterCtx, x, y, w, h, 144);
+            noise = gen_noise(waterCtx, x, y, w, h, WATER_SIZE);
             terrain = map_noise_to_water(noise);
             if (save_data == TRUE) {
                 fprintf(f, "%f\n", noise);
@@ -132,6 +198,53 @@ void generate_map(Map *map, long seed, int save_data) {
         }
     }
     simplex_noise_free(waterCtx);
+    if (save_data == TRUE) {
+        fprintf(f, "Moisture Noise\n");
+    }
+
+    SimplexNoiseContext *moistureCtx;
+    simplex_noise_init(seed / 4, &moistureCtx);
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            if (map->data[x + y * w]->terrain_type == TERRAIN_LAKE) {
+                continue;
+            }
+            noise = gen_noise(moistureCtx, x, y, w, h, MOISTURE_SIZE);
+            terrain = blend_noise_as_moisture(noise, map->data[x + y * w]->terrain_type);
+            if (save_data == TRUE) {
+                fprintf(f, "%f\n", noise);
+            }
+            if (terrain != 0) {
+                map->data[x + y * w]->terrain_type = terrain;
+
+            }
+        }
+    }
+    simplex_noise_free(moistureCtx);
+    if (save_data == TRUE) {
+        fprintf(f, "Temperature Noise\n");
+    }
+
+    SimplexNoiseContext *temperatureCtx;
+    simplex_noise_init(seed / 8, &temperatureCtx);
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            if (map->data[x + y * w]->terrain_type == TERRAIN_LAKE) {
+                continue;
+            }
+            noise = gen_noise(temperatureCtx, x, y, w, h, TEMPERATURE_SIZE);
+            terrain = blend_noise_as_temperature(noise, map->data[x + y * w]->terrain_type);
+            if (save_data == TRUE) {
+                fprintf(f, "%f\n", noise);
+            }
+            if (terrain != 0) {
+                map->data[x + y * w]->terrain_type = terrain;
+
+            }
+        }
+    }
+    simplex_noise_free(temperatureCtx);
+
     generate_cities(map);
     if (save_data == TRUE) {
         fclose(f);

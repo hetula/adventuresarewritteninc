@@ -155,25 +155,52 @@ static void pix(pixel_t *pixel, uint8_t red, uint8_t green, uint8_t blue) {
 static void map_terrain(pixel_t *pxl, int terrain) {
     switch (terrain) {
         case TERRAIN_LAKE:
-            pix(pxl, 66, 161, 244);
+            pix(pxl, 0, 175, 255);
             break;
         case TERRAIN_BEACH:
-            pix(pxl, 242, 220, 135);
+            pix(pxl, 255, 255, 95);
             break;
         case TERRAIN_GRASS:
-            pix(pxl, 135, 242, 148);
+            pix(pxl, 95, 255, 95);
             break;
         case TERRAIN_FOREST:
-            pix(pxl, 5, 132, 20);
+            pix(pxl, 0, 135, 0);
             break;
         case TERRAIN_HILL:
-            pix(pxl, 117, 87, 48);
+            pix(pxl, 135, 95, 0);
             break;
         case TERRAIN_MOUNTAIN:
-            pix(pxl, 183, 182, 181);
+            pix(pxl, 128, 128, 128);
             break;
         case TERRAIN_SNOWY_MOUNTAIN:
             pix(pxl, 255, 255, 255);
+            break;
+        case TERRAIN_SWAMP:
+            pix(pxl, 0, 95, 95);
+            break;
+        case TERRAIN_DESERT:
+            pix(pxl, 255, 215, 95);
+            break;
+        case TERRAIN_PLAINS:
+            pix(pxl, 175, 135, 0);
+            break;
+        case TERRAIN_WASTELAND:
+            pix(pxl, 255, 175, 0);
+            break;
+        case TERRAIN_GRASS_HILL:
+            pix(pxl, 95, 175, 0);
+            break;
+        case TERRAIN_PINE_FOREST:
+            pix(pxl, 0, 95, 0);
+            break;
+        case TERRAIN_SNOW_FOREST:
+            pix(pxl, 238, 238, 238);
+            break;
+        case TERRAIN_SNOW_PLAINS:
+            pix(pxl, 228, 228, 228);
+            break;
+        case TERRAIN_JUNGLE:
+            pix(pxl, 0, 215, 0);
             break;
         default:
             pix(pxl, 255, 0, 0);
