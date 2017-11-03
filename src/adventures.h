@@ -23,9 +23,13 @@
  */
 #ifndef ADVENTURESAREWRITTENINC_ADVENTURES_H
 #define ADVENTURESAREWRITTENINC_ADVENTURES_H
+/*
+ * All Global Constants go here for easy configuration changes
+ */
 
-static const int MAP_SIZE = 1024;
-static const size_t MAP_FULL_SIZE = MAP_SIZE * MAP_SIZE;
+static const unsigned int MAP_WIDTH = 768;
+static const unsigned int MAP_HEIGHT = 512;
+static const unsigned long MAP_FULL_SIZE = MAP_WIDTH * MAP_HEIGHT; // 1 048 576 -> 393 216
 
 static const int MAP_WINDOW_WIDTH = 48;
 static const int MAP_WINDOW_HEIGHT = 24;
@@ -35,5 +39,15 @@ static const int WORLD_WINDOW_HEIGHT = 4;
 
 static const int PLAYER_WINDOW_WIDTH = 32;
 static const int PLAYER_WINDOW_HEIGHT = 16;
+
+static const int MAX_BUILDINGS = 3000;
+static const int MAX_METROPOLIES = 30;
+static const int MAX_CITIES = 150;
+static const int MAX_TOWNS = 800;
+
+static const int FARM_MIN_DISTANCE = 8;
+static const int TOWN_MIN_DISTANCE = 16;
+static const int CITY_MIN_DISTANCE = 32;
+static const int METROPOLIS_MIN_DISTANCE = 64;
 
 #endif //ADVENTURESAREWRITTENINC_ADVENTURES_H

@@ -29,6 +29,8 @@
 
 void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char *string);
 
+void sleep_ms(unsigned int ms);
+
 int get_rnd(int max);
 
 double manhattan_distance_t(MapTile *tile1, MapTile *tile2);

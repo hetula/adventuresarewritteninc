@@ -168,8 +168,9 @@ void draw_map(const Map *map, const World *world, const Player *player) {
     int pY = MAP_WINDOW_HEIGHT / 2;
     Terrain *terrain;
     int opt;
-    werase(map->win);
-    wrefresh(map->win);
+    // TODO: Make this as option
+    //werase(map->win);
+    //wrefresh(map->win);
     for (int y = -pY; y < pY; y++) {
         for (int x = -pX; x < pX; x++) {
             if (y == 0 && x == 0) {

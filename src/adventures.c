@@ -21,12 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/* Use POSIX 2008 */
-#define _XOPEN_SOURCE 700
-#define _LARGEFILE64_SOURCE
-#define _FILE_OFFSET_BITS 64
-#define _GNU_SOURCE
-
 #include <stdio.h>
 #include <ncurses.h>
 #include <unistd.h>
@@ -92,7 +86,7 @@ void begin_adventure(Map *map, World *world, Player *player) {
 
     int ch;
     while (1) {
-        usleep(16 * 1000);
+        sleep_ms(16);
         draw_world(world);
         draw_player(player, map);
         draw_map(map, world, player);
@@ -124,7 +118,7 @@ int main(int argc, char **argv) {
     }
     init_curses();
 
-    Map map = {MAP_SIZE, MAP_SIZE};
+    Map map = {MAP_WIDTH, MAP_HEIGHT};
     Player player;
     World world;
 
@@ -136,7 +130,7 @@ int main(int argc, char **argv) {
     }
     unsigned int seed = (unsigned int) time(NULL);
     mvprintw(5, 1, "Creating world...\n\t-> Seed:   %u\n\t-> Width:  %u\n\t-> Height: %u",
-             seed, MAP_SIZE, MAP_SIZE);
+             seed, MAP_WIDTH, MAP_HEIGHT);
     srandom(seed);
     refresh();
 

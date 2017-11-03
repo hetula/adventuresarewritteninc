@@ -24,26 +24,16 @@
 #include "citygen.h"
 #include "utils.h"
 
-#define MAX_BUILDINGS 10000
-#define MAX_METROPOLIES 100
-#define MAX_CITIES 500
-#define MAX_TOWNS 2500
-
-#define FARM_MANHATTAN 8
-#define TOWN_MANHATTAN 16
-#define CITY_MANHATTAN 32
-#define METROPOLIS_MANHATTAN 64
-
 int get_terrain_min_distance(int terrain) {
     switch (terrain) {
         case TERRAIN_FARM:
-            return FARM_MANHATTAN;
+            return FARM_MIN_DISTANCE;
         case TERRAIN_TOWN:
-            return TOWN_MANHATTAN;
+            return TOWN_MIN_DISTANCE;
         case TERRAIN_CITY:
-            return CITY_MANHATTAN;
+            return CITY_MIN_DISTANCE;
         case TERRAIN_METROPOLIS:
-            return METROPOLIS_MANHATTAN;
+            return METROPOLIS_MIN_DISTANCE;
         default:
             return 9999999;
     }

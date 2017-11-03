@@ -23,8 +23,8 @@
  */
 #include <memory.h>
 #include "utils.h"
-#include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
 
 void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char *string) {
     size_t l = strlen(string);
@@ -38,8 +38,15 @@ void printdl(WINDOW *window, int startX, int startY, unsigned int delayMs, char 
         mvwprintw(window, y, x, "%c", string[i]);
         wrefresh(window);
         x++;
-        usleep(delayMs * 1000);
+        sleep_ms(delayMs);
     }
+}
+
+void sleep_ms(unsigned int ms) {
+    struct timespec ts;
+    ts.tv_sec = ms / 1000;
+    ts.tv_nsec = (ms % 1000) * 1000000;
+    nanosleep(&ts, NULL);
 }
 
 int get_rnd(int max) {

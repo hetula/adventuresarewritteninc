@@ -37,8 +37,8 @@ typedef struct MapTile_ {
 } MapTile;
 
 typedef struct Map_ {
-    int width;
-    int height;
+    unsigned int width;
+    unsigned int height;
     WINDOW *win;
     MapTile **data;
 } Map;
