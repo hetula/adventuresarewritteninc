@@ -38,13 +38,13 @@ uint8_t map_noise_to_terrain(double noise) {
     if (noise < .5) {
         return TERRAIN_GRASS;
     }
-    if (noise < .6) {
+    if (noise < .65) {
         return TERRAIN_FOREST;
     }
     if (noise < .7) {
         return TERRAIN_HILL;
     }
-    if (noise < .75f) {
+    if (noise < .78f) {
         return TERRAIN_MOUNTAIN;
     }
     return TERRAIN_SNOWY_MOUNTAIN;

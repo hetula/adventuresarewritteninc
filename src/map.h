@@ -41,6 +41,7 @@ typedef struct Map_ {
     unsigned int height;
     WINDOW *win;
     MapTile **data;
+    void *tile_data;
 } Map;
 
 void generate_map(Map *map, long seed, int save_data);

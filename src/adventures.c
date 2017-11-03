@@ -141,6 +141,7 @@ int main(int argc, char **argv) {
         map.data[i]->terrain_type = 0;
         map.data[i]->x = 0;
         map.data[i]->y = 0;
+        map.tile_data = NULL;
     }
     generate_map(&map, random(), argc != 1 ? TRUE : FALSE);
 
