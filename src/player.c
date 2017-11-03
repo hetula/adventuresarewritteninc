@@ -26,6 +26,7 @@
 #include <memory.h>
 #include "player.h"
 #include "map.h"
+#include "utils.h"
 
 void init_character(Player *player) {
     player->x = 0;
@@ -87,7 +88,13 @@ void draw_player(const Player *player, const Map *map) {
     startY++;
     mvwprintw(win, startY++, startX, "%s %s", race_str(player->race), class_str(player->class));
     mvwprintw(win, startY++, startX, "X: %d Y: %d", player->x, player->y);
-    mvwprintw(win, startY++, startX, "%s", terrain_at(map, player->x, player->y)->name);
+    TileObject *currentTile = map->data[indx(player->x, player->y, map)]->tile;
+    if (currentTile == NULL || strlen(currentTile->name) <= 0) {
+        mvwprintw(win, startY++, startX, "%s", terrain_at(map, player->x, player->y)->name);
+    } else {
+        mvwprintw(win, startY++, startX, "%s [%s]", terrain_at(map, player->x, player->y)->name,
+                  currentTile->name);
+    }
     startY++;
     mvwprintw(win, startY++, startX, "Level:      %d", player->level);
     mvwprintw(win, startY++, startX, "Experience: %d/%d", player->exp, 100);

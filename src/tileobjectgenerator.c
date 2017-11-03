@@ -21,8 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "citygen.h"
+#include "tileobjectgenerator.h"
+#include <stdlib.h>
 #include "utils.h"
+#include "namegenerator.h"
+
+void free_tile_object(TileObject *tileObject) {
+    switch (tileObject->terrain_type) {
+        case TERRAIN_METROPOLIS:
+            free((Metropolis *) tileObject);
+            break;
+        case TERRAIN_CITY:
+            free((City *) tileObject);
+            break;
+        case TERRAIN_TOWN:
+            free((Town *) tileObject);
+            break;
+        case TERRAIN_FARM:
+            free((Farm *) tileObject);
+            break;
+        default:
+            free(tileObject);
+            break;
+    }
+}
 
 int get_terrain_min_distance(int terrain) {
     switch (terrain) {
@@ -42,23 +64,24 @@ int get_terrain_min_distance(int terrain) {
 void generate_cities(Map *map) {
     int cities = MAX_BUILDINGS;
     int c = 0;
-    City cityArr[cities];
-    City *cur;
-    City temp;
+    TileObject *objArr[cities];
+    TileObject *cur;
+    TileObject *temp;
     int ok;
-    cur = &cityArr[c];
     unsigned int gen_terrain_type = TERRAIN_METROPOLIS;
     int metropolis = MAX_METROPOLIES;
     int citys = MAX_CITIES;
     int towns = MAX_TOWNS;
 
+    cur = malloc(sizeof(Metropolis));
+
     while (cities > 0) {
         ok = TRUE;
-        cur->x = get_rnd(map->width);
-        cur->y = get_rnd(map->height);
+        cur->x = get_urnd(map->width);
+        cur->y = get_urnd(map->height);
         cur->terrain_type = gen_terrain_type;
 
-        if (map->data[cur->x + cur->y * map->width]->terrain_type == TERRAIN_LAKE) {
+        if (map->data[indx(cur->x, cur->y, map)]->terrain_type == TERRAIN_LAKE) {
             continue;
         }
 
@@ -66,13 +89,12 @@ void generate_cities(Map *map) {
             if (i == c) {
                 continue;
             }
-            temp = cityArr[i];
-            if (temp.x == cur->x && temp.y == cur->y) {
+            temp = objArr[i];
+            if (temp->x == cur->x && temp->y == cur->y) {
                 ok = FALSE;
                 break;
             }
-            if (manhattan_distance(temp.x, temp.y, cur->x, cur->y) <=
-                get_terrain_min_distance(cur->terrain_type)) {
+            if (manhattan_distance(temp->x, temp->y, cur->x, cur->y) <= get_terrain_min_distance(cur->terrain_type)) {
                 ok = FALSE;
                 break;
             }
@@ -82,6 +104,10 @@ void generate_cities(Map *map) {
         if (ok == TRUE) {
             mvprintw(9, 0, "Generating cities: %d             ", cities);
             refresh();
+            gen_city_name(cur->name);
+            objArr[c] = cur;
+            map->data[indx(cur->x, cur->y, map)]->tile = cur;
+            map->data[indx(cur->x, cur->y, map)]->terrain_type = cur->terrain_type;
             c++;
             cities--;
             switch (gen_terrain_type) {
@@ -106,13 +132,22 @@ void generate_cities(Map *map) {
                 default:
                     break;
             }
-            cur = &cityArr[c];
+            switch (gen_terrain_type) {
+                case TERRAIN_METROPOLIS:
+                    cur = malloc(sizeof(Metropolis));
+                    break;
+                case TERRAIN_CITY:
+                    cur = malloc(sizeof(City));
+                    break;
+                case TERRAIN_TOWN:
+                    cur = malloc(sizeof(Town));
+                    break;
+                case TERRAIN_FARM:
+                default:
+                    cur = malloc(sizeof(Farm));
+                    break;
+            }
         }
-    }
-
-    for (int i = 0; i < MAX_BUILDINGS; i++) {
-        temp = cityArr[i];
-        map->data[temp.x + temp.y * map->width]->terrain_type = temp.terrain_type;
     }
 
 }

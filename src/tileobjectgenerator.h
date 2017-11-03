@@ -26,13 +26,8 @@
 
 #include "map.h"
 
-typedef struct City_ {
-    int x;
-    int y;
-    unsigned int terrain_type;
-    char name[16];
-} City;
-
 void generate_cities(Map *map);
+
+void free_tile_object(TileObject *tileObject);
 
 #endif //ADVENTURESAREWRITTENINC_CITYGEN_H

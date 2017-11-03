@@ -27,7 +27,7 @@
 #include "imageutil.h"
 #include "simplexnoise/simplexnoise.h"
 #include "adventures.h"
-#include "citygen.h"
+#include "tileobjectgenerator.h"
 
 static const double PI_CONST = M_PI * 2;
 

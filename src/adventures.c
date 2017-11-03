@@ -31,6 +31,7 @@
 #include "intro.h"
 #include "charactercreator.h"
 #include "utils.h"
+#include "tileobjectgenerator.h"
 
 #define MOVE_LEFT (-1)
 #define MOVE_RIGHT 1
@@ -141,7 +142,7 @@ int main(int argc, char **argv) {
         map.data[i]->terrain_type = 0;
         map.data[i]->x = 0;
         map.data[i]->y = 0;
-        map.tile_data = NULL;
+        map.data[i]->tile = NULL;
     }
     generate_map(&map, random(), argc != 1 ? TRUE : FALSE);
 
@@ -163,7 +164,12 @@ int main(int argc, char **argv) {
     endwin();
 
     for (int i = 0; i < MAP_FULL_SIZE; i++) {
+        if (map.data[i]->tile != NULL) {
+            free_tile_object(map.data[i]->tile);
+            map.data[i]->tile = NULL;
+        }
         free(map.data[i]);
+        map.data[i] = NULL;
     }
     free(map.data);
     return EXIT_SUCCESS;

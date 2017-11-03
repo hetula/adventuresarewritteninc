@@ -58,6 +58,19 @@ int get_rnd(int max) {
     return (int) retval; // Max is type int so result can't be any bigger
 }
 
+unsigned int get_urnd(unsigned int max) {
+    unsigned int divisor = RAND_MAX / (max + 1);
+    long retval;
+    do {
+        retval = random() / divisor;
+    } while (retval >= max);
+    return (unsigned int) retval; // Max is type int so result can't be any bigger
+}
+
+int indx(int x, int y, const Map *map) {
+    return x + y * map->width;
+}
+
 double manhattan_distance_t(MapTile *tile1, MapTile *tile2) {
     return manhattan_distance(tile1->x, tile1->y, tile2->x, tile2->y);
 }

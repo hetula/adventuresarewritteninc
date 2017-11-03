@@ -33,6 +33,10 @@ void sleep_ms(unsigned int ms);
 
 int get_rnd(int max);
 
+unsigned int get_urnd(unsigned int max);
+
+int indx(int x, int y, const Map *map);
+
 double manhattan_distance_t(MapTile *tile1, MapTile *tile2);
 
 double manhattan_distance(int x1, int y1, int x2, int y2);

@@ -25,6 +25,7 @@
 #include "terrain.h"
 
 const Terrain UNKNOWN = {
+        -1,
         "UNKNOWN\0",
         '?', /* Visual */
         COLOR_DAY_LAKE,
@@ -33,6 +34,7 @@ const Terrain UNKNOWN = {
 };
 
 const Terrain LAKE = {
+        TERRAIN_LAKE,
         "Lake\0",
         '~', /* Visual */
         COLOR_DAY_LAKE,
@@ -40,6 +42,7 @@ const Terrain LAKE = {
         120
 };
 const Terrain BEACH = {
+        TERRAIN_BEACH,
         "Beach\0",
         '\'',
         COLOR_DAY_BEACH,
@@ -47,6 +50,7 @@ const Terrain BEACH = {
         45
 };
 const Terrain GRASS = {
+        TERRAIN_GRASS,
         "Grass\0",
         '.',
         COLOR_DAY_GRASS,
@@ -54,6 +58,7 @@ const Terrain GRASS = {
         45
 };
 const Terrain FOREST = {
+        TERRAIN_FOREST,
         "Forest\0",
         '#',
         COLOR_DAY_FOREST,
@@ -61,6 +66,7 @@ const Terrain FOREST = {
         90
 };
 const Terrain HILL = {
+        TERRAIN_HILL,
         "Hill\0",
         '^',
         COLOR_DAY_HILL,
@@ -68,6 +74,7 @@ const Terrain HILL = {
         102
 };
 const Terrain MOUNTAIN = {
+        TERRAIN_MOUNTAIN,
         "Mountain\0",
         '^',
         COLOR_DAY_MOUNTAIN,
@@ -75,6 +82,7 @@ const Terrain MOUNTAIN = {
         480
 };
 const Terrain SNOWY_MOUNTAIN = {
+        TERRAIN_SNOWY_MOUNTAIN,
         "Mountain Peak\0",
         '^',
         COLOR_DAY_SNOWY_MOUNTAIN,
@@ -83,6 +91,7 @@ const Terrain SNOWY_MOUNTAIN = {
 };
 
 const Terrain FARM = {
+        TERRAIN_FARM,
         "Farm\0",
         'F',
         COLOR_DAY_FARM,
@@ -91,6 +100,7 @@ const Terrain FARM = {
 };
 
 const Terrain TOWN = {
+        TERRAIN_TOWN,
         "Town\0",
         'T',
         COLOR_DAY_TOWN,
@@ -99,6 +109,7 @@ const Terrain TOWN = {
 };
 
 const Terrain CITY = {
+        TERRAIN_CITY,
         "City\0",
         'C',
         COLOR_DAY_CITY,
@@ -107,6 +118,7 @@ const Terrain CITY = {
 };
 
 const Terrain METROPOLIS = {
+        TERRAIN_METROPOLIS,
         "Metropolis\0",
         'M',
         COLOR_DAY_METROPOLIS,

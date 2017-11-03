@@ -24,6 +24,8 @@
 #ifndef ADVENTURESAREWRITTENINC_TERRAIN_H
 #define ADVENTURESAREWRITTENINC_TERRAIN_H
 
+#define MAX_TILE_OBJECT_NAME_LENGTH 32
+
 #define COLOR_DAY_LAKE 1
 #define COLOR_DAY_BEACH 2
 #define COLOR_DAY_GRASS 3
@@ -64,6 +66,7 @@
 #define TERRAIN_METROPOLIS 67
 
 struct Terrain_ {
+    int type;
     char name[16];
     char visual;
     int color_day;
@@ -72,6 +75,29 @@ struct Terrain_ {
 };
 
 typedef const struct Terrain_ Terrain;
+
+typedef struct TileObject_ {
+    unsigned int x;
+    unsigned int y;
+    unsigned int terrain_type;
+    char name[MAX_TILE_OBJECT_NAME_LENGTH + 1];
+} TileObject;
+
+typedef struct Metropolis_ {
+    TileObject tileObject;
+} Metropolis;
+
+typedef struct City_ {
+    TileObject tileObject;
+} City;
+
+typedef struct Town_ {
+    TileObject tileObject;
+} Town;
+
+typedef struct Farm_ {
+    TileObject tileObject;
+} Farm;
 
 extern Terrain UNKNOWN;
 extern Terrain LAKE;

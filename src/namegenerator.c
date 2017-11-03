@@ -21,34 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef ADVENTURESAREWRITTENINC_ADVENTURES_H
-#define ADVENTURESAREWRITTENINC_ADVENTURES_H
-/*
- * All Global Constants go here for easy configuration changes
- */
 
-static const unsigned int MAP_WIDTH = 768;
-static const unsigned int MAP_HEIGHT = 512;
-static const unsigned long MAP_FULL_SIZE = MAP_WIDTH * MAP_HEIGHT;
+#include "namegenerator.h"
+#include "utils.h"
 
-static const int MAP_WINDOW_WIDTH = 48;
-static const int MAP_WINDOW_HEIGHT = 24;
-
-static const int WORLD_WINDOW_WIDTH = 48;
-static const int WORLD_WINDOW_HEIGHT = 4;
-
-static const int PLAYER_WINDOW_WIDTH = 48;
-static const int PLAYER_WINDOW_HEIGHT = 16;
-
-static const int MAX_BUILDINGS = 3000;
-static const int MAX_METROPOLIES = 30;
-static const int MAX_CITIES = 150;
-static const int MAX_TOWNS = 800;
-static const int MAX_FARMS = MAX_BUILDINGS - MAX_METROPOLIES - MAX_CITIES - MAX_TOWNS;
-
-static const int FARM_MIN_DISTANCE = 8;
-static const int TOWN_MIN_DISTANCE = 16;
-static const int CITY_MIN_DISTANCE = 32;
-static const int METROPOLIS_MIN_DISTANCE = 64;
-
-#endif //ADVENTURESAREWRITTENINC_ADVENTURES_H
+void gen_city_name(char *name) {
+    int length = 6 + get_rnd(MAX_TILE_OBJECT_NAME_LENGTH - 6);
+    name[0] = (char) (65 + get_rnd(25));
+    for (int i = 1; i < length; i++) {
+        name[i] = (char) (97 + get_rnd(25));
+    }
+    name[length + 1] = '\0';
+}
