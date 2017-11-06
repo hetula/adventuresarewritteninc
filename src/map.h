@@ -30,10 +30,11 @@
 #include "terrain.h"
 #include "adventures.h"
 
-#define BASE_SIZE 72
-#define WATER_SIZE 144
-#define MOISTURE_SIZE 4
-#define TEMPERATURE_SIZE 4
+#define PRINT_INFO 1
+#define BASE_SIZE 64
+#define WATER_SIZE 16
+#define MOISTURE_SIZE 8
+#define TEMPERATURE_SIZE 6
 
 typedef struct MapTile_ {
     unsigned int terrain_type;
